@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="20086" systemVersion="21F79" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+    <entity name="Animation" representedClassName="Animation" syncable="YES">
+        <attribute name="animationData" optional="YES" attributeType="Transformable" valueTransformerName=""/>
+        <attribute name="name" optional="YES" attributeType="String"/>
+        <relationship name="sprite" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="SpritePreview" inverseName="animations" inverseEntity="SpritePreview"/>
+    </entity>
+    <entity name="SpritePreview" representedClassName="SpritePreview" syncable="YES">
+        <attribute name="name" optional="YES" attributeType="String"/>
+        <attribute name="previewData" optional="YES" attributeType="Binary"/>
+        <relationship name="animations" optional="YES" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="Animation" inverseName="sprite" inverseEntity="Animation"/>
+    </entity>
+    <elements>
+        <element name="SpritePreview" positionX="-63" positionY="-18" width="128" height="74"/>
+        <element name="Animation" positionX="-54" positionY="0" width="128" height="74"/>
+    </elements>
+</model>
