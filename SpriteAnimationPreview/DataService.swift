@@ -48,8 +48,11 @@ class DataService {
     }
     
     func addAnimation(name: String, animationData: [Data], spriteName: String) async throws {
-        guard let sprite = fetchSprite(name: spriteName) else { return }
-        let newAnimation = Animation(
+        guard let sprite = try await fetchSprite(name: spriteName),
+              let newAnimation = Animation(managedObjectContext: viewContext, name: name, animationData: animationData)
+        else { return }
+        
+        sprite.addToAnimations(newAnimation)
     }
     
     func fetchSprite(name: String) async throws -> SpritePreview? {

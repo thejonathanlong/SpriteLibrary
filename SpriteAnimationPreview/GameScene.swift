@@ -31,6 +31,8 @@ class GameScene: SKScene {
     
     var sprites: [SKSpriteNode] = []
     
+    let atlas = SKTextureAtlas(named: "Sprites")
+    
     init(size: CGSize, gameSceneDelegate: GameSceneDelegate) {
         super.init(size: size)
         self.gameSceneDelegate = gameSceneDelegate
@@ -43,7 +45,7 @@ class GameScene: SKScene {
     private var spinnyNode : SKShapeNode?
     
     override func didMove(to view: SKView) {
-        addPlusLabels(number: 9)
+        addPlusLabels(number: 18)
     }
     
     
@@ -102,23 +104,26 @@ private extension GameScene {
         var row: CGFloat = 0
         var col: CGFloat = 0
         for i in 0..<number {
-            let label = SKLabelNode(text: ButtonNames.selectFiles.text)
+            let texture = atlas.textureNamed("Bordered_Rectangle")
+            let label = SKSpriteNode(texture: texture)
+//            let label = SKLabelNode(text: ButtonNames.selectFiles.text)
             addChild(label)
             label.alpha = 0.0
             label.name = ButtonNames.selectFiles.rawValue
             label.color = SKColor.white
-            label.fontSize = 50
-            label.position = CGPoint(x: (size.width / 3.0) * col + (size.width / 6.0), y: (size.height / 3.0) * row + (size.height / 6.0))
+//            label.fontSize = 50
+            let y: CGFloat = label.size.height * row + (size.height / 6.0)// * (row + 1) + (size.height / 6.0)//+ (size.height / 3.0)
+            label.position = CGPoint(x: (size.width / 6.0) * col + (size.width / 12.0), y: y)
             
 //            label.frame = CGRect(x: col * size.width / 3.0, y: size.height / 3.0 * row, width: size.width / 3.0, height: size.height / 3.0 )
             
             
             label.run(SKAction.fadeIn(withDuration: 1.0))
             
-            labelNodes.append(label)
+//            labelNodes.append(label)
             
             col += 1
-            if ((i + 1) % 3) == 0 {
+            if ((i + 1) % 6) == 0 {
                 row += 1
                 col = 0
             }

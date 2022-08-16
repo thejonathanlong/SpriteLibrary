@@ -16,12 +16,26 @@ extension Animation {
         return NSFetchRequest<Animation>(entityName: "Animation")
     }
 
-    @NSManaged public var animationData: NSObject?
+    @NSManaged public var animationData: [Data]?
     @NSManaged public var name: String?
     @NSManaged public var sprite: SpritePreview?
 
 }
 
 extension Animation : Identifiable {
+    private static var entityName: String {
+        "Animation"
+    }
 
+    convenience init?(managedObjectContext: NSManagedObjectContext,
+                      name: String,
+                      animationData: [Data]) {
+        guard let entityDescription = NSEntityDescription.entity(forEntityName: Animation.entityName, in: managedObjectContext) else {
+            return nil
+        }
+        self.init(entity: entityDescription, insertInto: managedObjectContext)
+
+        self.name = name
+        self.animationData = animationData
+    }
 }
