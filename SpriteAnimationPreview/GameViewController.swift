@@ -18,6 +18,10 @@ class GameViewController: UIViewController, GameSceneDelegate, UIDocumentPickerD
     
     var selectedButton: SKLabelNode?
     
+    override func loadView() {
+        view = SKView()
+    }
+    
     func didTapSelectFilesButton(_ button: SKLabelNode) {
         selectedButton = button
         
@@ -92,8 +96,8 @@ class GameViewController: UIViewController, GameSceneDelegate, UIDocumentPickerD
         
 //        let animationAction = spriteFactory.animationAction(for: urls)
 //        gameScene.run(action: animationAction, for: sprite)
-        let previewSpriteNode = SpritePreviewNode(texture: nil, color: .red, size: selectedButton.frame.size)
-        gameScene.add(sprite: previewSpriteNode)
+//        let previewSpriteNode = SpritePreviewNode(texture: nil, color: .red, size: selectedButton.frame.size)
+//        gameScene.add(sprite: previewSpriteNode)
         
     }
 }

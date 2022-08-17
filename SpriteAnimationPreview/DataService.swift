@@ -63,6 +63,14 @@ class DataService {
         return previews.first
     }
     
+    func fetchSprites(offset: Int, limit: Int) -> [SpritePreview] {
+        let fetchRequest = SpritePreview.fetchRequest()
+        fetchRequest.fetchOffset = offset
+        fetchRequest.fetchLimit = limit
+        fetchRequest.predicate = NSPredicate(value: true)
+        
+    }
+    
     
     
 }
