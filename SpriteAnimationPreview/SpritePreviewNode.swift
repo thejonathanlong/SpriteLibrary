@@ -9,19 +9,23 @@ import Foundation
 import SpriteKit
 
 class SpritePreviewNode: SKSpriteNode {
+    lazy var nameLabel: SKLabelNode = {
+        let label = SKLabelNode()
+        label.text = model.name
+        label.fontColor = SKColor.white
+        label.fontSize = 12
+        return label
+    }()
     
-    enum PreviewState {
-        case none
-        case sprite(spriteNode: SKSpriteNode, animations: [String: [SKTexture]])
-    }
+    lazy var addAnimationButton: SKLabelNode = {
+        let label = SKLabelNode()
+        label.text = "+"
+        label.fontSize = 20
+        label.fontColor = SKColor.white
+        return label
+    }()
     
-    
-    
-//    lazy var borderTextureSprite = SKSpriteNode(texture: texture)
-    
-    var currentState = PreviewState.none
-    
-    let label = SKLabelNode(text: "Testing 1,2,3")
+    let model: SpritePreviewModel
     
     override var position: CGPoint {
         didSet {
@@ -29,49 +33,41 @@ class SpritePreviewNode: SKSpriteNode {
         }
     }
     
-    init(atlas: SKTextureAtlas) {
-        let borderTexture = atlas.textureNamed("Bordered_Rectangle")
+    init(model: SpritePreviewModel, borderTexture: SKTexture) {
+        self.model = model
         super.init(texture: borderTexture, color: .clear, size: borderTexture.size())
-        
-//        addChild(label)
-//        label.fontColor = SKColor.white
-//        label.fontSize = 12
-//        print("init pos: \(position)")
-//        label.position = CGPoint(x: position.x, y: position.y - (size.height / 2.0) + 20.0)
     }
     
     override init(texture: SKTexture?, color: UIColor, size: CGSize) {
+        self.model = SpritePreviewModel(name: "", preview: SKTexture(), animations: [])
         super.init(texture: texture, color: color, size: size)
     }
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-}
-
-extension SpritePreviewNode {
-    func apply(state newState: PreviewState) {
-        switch (currentState, newState) {
-            case (.none, .none):
-                break
-                
-            case (.sprite(spriteNode: let sprite, animations: let animations), _),
-                (_, .sprite(spriteNode: let sprite, animations: let animations)):
-                addChild(sprite)
-                sprite.position = CGPoint(x: size.width/2.0, y: size.height/2.0)
-                break
-
+    
+    func touchUp(at point: CGPoint) {
+        
+        if addAnimationButton.frame.contains(point) {
+            print("Add animation to \(model.name)")
         }
     }
-    
 }
 
 private extension SpritePreviewNode {
     func updateChildNodesPosition() {
-        print("pos: \(position)")
-        addChild(label)
-        label.fontColor = SKColor.white
-        label.fontSize = 12
-        label.position = CGPoint(x: 0, y: -(size.height / 2.0) + 20)
+        print("model: \(model)")
+        addChild(nameLabel)
+        addChild(addAnimationButton)
+        
+        addAnimationButton.position = CGPoint(x: (size.width / 2.0) * -1 + 30, y: (size.height / 2.0) - 30)
+        
+        let nameLabelY = -(size.height / 2.0) + 20
+        nameLabel.position = CGPoint(x: 0, y: nameLabelY)
+        
+        let previewNode = SKSpriteNode(texture: model.preview)
+        addChild(previewNode)
+        previewNode.position = CGPoint(x: 0, y: 0)
     }
 }

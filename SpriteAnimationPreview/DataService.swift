@@ -41,10 +41,8 @@ class DataService {
         }
     }
     
-    func addSprite(name: String, previewData: Data) {
-        let spritePreview = SpritePreview()
-        spritePreview.name = name
-        spritePreview.previewData = previewData
+    @discardableResult func addSprite(name: String, previewData: Data, creationDate: Date = Date()) -> SpritePreview? {
+        return SpritePreview(managedObjectContext: viewContext, name: name, previewData: previewData, animations: nil, creationDate: creationDate)
     }
     
     func addAnimation(name: String, animationData: [Data], spriteName: String) async throws {
@@ -63,12 +61,22 @@ class DataService {
         return previews.first
     }
     
-    func fetchSprites(offset: Int, limit: Int) -> [SpritePreview] {
+    func fetchSprites(offset: Int, limit: Int) async throws -> [SpritePreview] {
         let fetchRequest = SpritePreview.fetchRequest()
         fetchRequest.fetchOffset = offset
         fetchRequest.fetchLimit = limit
         fetchRequest.predicate = NSPredicate(value: true)
+        fetchRequest.sortDescriptors = [
+            NSSortDescriptor(key: "creationDate", ascending: true)
+        ]
         
+        do {
+            let results : [SpritePreview] = try viewContext.fetch(fetchRequest)
+            return results
+        } catch let error {
+            print("JLO: \(error)")
+            return []
+        }
     }
     
     

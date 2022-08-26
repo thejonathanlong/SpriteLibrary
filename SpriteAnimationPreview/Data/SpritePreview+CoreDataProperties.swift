@@ -2,7 +2,7 @@
 //  SpritePreview+CoreDataProperties.swift
 //  SpriteAnimationPreview
 //
-//  Created by Jonathan Long on 8/15/22.
+//  Created by Jonathan Long on 8/16/22.
 //
 //
 
@@ -18,6 +18,7 @@ extension SpritePreview {
 
     @NSManaged public var name: String?
     @NSManaged public var previewData: Data?
+    @NSManaged public var creationDate: Date?
     @NSManaged public var animations: NSOrderedSet?
 
 }
@@ -66,7 +67,8 @@ extension SpritePreview : Identifiable {
     convenience init?(managedObjectContext: NSManagedObjectContext,
                       name: String,
                       previewData: Data,
-                      animations: NSOrderedSet?) {
+                      animations: NSOrderedSet?,
+                      creationDate: Date = Date()) {
         guard let entityDescription = NSEntityDescription.entity(forEntityName: SpritePreview.entityName, in: managedObjectContext) else {
             return nil
         }
@@ -75,5 +77,6 @@ extension SpritePreview : Identifiable {
         self.name = name
         self.previewData = previewData
         self.animations = animations
+        self.creationDate = creationDate
     }
 }

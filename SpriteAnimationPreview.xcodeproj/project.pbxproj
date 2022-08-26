@@ -7,8 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		564A5EA928B466A7000E5635 /* Publisher+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 564A5EA828B466A7000E5635 /* Publisher+Extensions.swift */; };
+		564A5EAB28B47357000E5635 /* NewSpriteState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 564A5EAA28B47357000E5635 /* NewSpriteState.swift */; };
 		56E064F728A6A803004B2B42 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56E064F628A6A803004B2B42 /* AppDelegate.swift */; };
-		56E064FD28A6A803004B2B42 /* GameScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56E064FC28A6A803004B2B42 /* GameScene.swift */; };
+		56E064FD28A6A803004B2B42 /* SpriteLibraryScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56E064FC28A6A803004B2B42 /* SpriteLibraryScene.swift */; };
 		56E064FF28A6A803004B2B42 /* GameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56E064FE28A6A803004B2B42 /* GameViewController.swift */; };
 		56E0650428A6A805004B2B42 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 56E0650328A6A805004B2B42 /* Assets.xcassets */; };
 		56E0650728A6A805004B2B42 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 56E0650528A6A805004B2B42 /* LaunchScreen.storyboard */; };
@@ -23,12 +25,15 @@
 		56E0652628AC80EA004B2B42 /* SpritePreviewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56E0652528AC80EA004B2B42 /* SpritePreviewModel.swift */; };
 		56E0652828AC81AF004B2B42 /* AnimationModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56E0652728AC81AF004B2B42 /* AnimationModel.swift */; };
 		56E0652A28AC8256004B2B42 /* SpriteProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56E0652928AC8256004B2B42 /* SpriteProvider.swift */; };
+		56E0652F28AC8D27004B2B42 /* OrderedCollections in Frameworks */ = {isa = PBXBuildFile; productRef = 56E0652E28AC8D27004B2B42 /* OrderedCollections */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		564A5EA828B466A7000E5635 /* Publisher+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Publisher+Extensions.swift"; sourceTree = "<group>"; };
+		564A5EAA28B47357000E5635 /* NewSpriteState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewSpriteState.swift; sourceTree = "<group>"; };
 		56E064F328A6A803004B2B42 /* SpriteAnimationPreview.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SpriteAnimationPreview.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		56E064F628A6A803004B2B42 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		56E064FC28A6A803004B2B42 /* GameScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameScene.swift; sourceTree = "<group>"; };
+		56E064FC28A6A803004B2B42 /* SpriteLibraryScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpriteLibraryScene.swift; sourceTree = "<group>"; };
 		56E064FE28A6A803004B2B42 /* GameViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameViewController.swift; sourceTree = "<group>"; };
 		56E0650328A6A805004B2B42 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		56E0650628A6A805004B2B42 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -50,6 +55,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				56E0652F28AC8D27004B2B42 /* OrderedCollections in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -79,7 +85,7 @@
 				56E0650328A6A805004B2B42 /* Assets.xcassets */,
 				56E0652428AC7AE7004B2B42 /* Data */,
 				56E064F628A6A803004B2B42 /* AppDelegate.swift */,
-				56E064FC28A6A803004B2B42 /* GameScene.swift */,
+				56E064FC28A6A803004B2B42 /* SpriteLibraryScene.swift */,
 				56E064FE28A6A803004B2B42 /* GameViewController.swift */,
 				56E0650D28A6EC0C004B2B42 /* SpriteFactory.swift */,
 				56E0651128A9EA76004B2B42 /* SpritePreviewNode.swift */,
@@ -87,6 +93,8 @@
 				56E0652528AC80EA004B2B42 /* SpritePreviewModel.swift */,
 				56E0652728AC81AF004B2B42 /* AnimationModel.swift */,
 				56E0652928AC8256004B2B42 /* SpriteProvider.swift */,
+				564A5EA828B466A7000E5635 /* Publisher+Extensions.swift */,
+				564A5EAA28B47357000E5635 /* NewSpriteState.swift */,
 			);
 			path = SpriteAnimationPreview;
 			sourceTree = "<group>";
@@ -119,6 +127,9 @@
 			dependencies = (
 			);
 			name = SpriteAnimationPreview;
+			packageProductDependencies = (
+				56E0652E28AC8D27004B2B42 /* OrderedCollections */,
+			);
 			productName = SpriteAnimationPreview;
 			productReference = 56E064F328A6A803004B2B42 /* SpriteAnimationPreview.app */;
 			productType = "com.apple.product-type.application";
@@ -147,6 +158,9 @@
 				Base,
 			);
 			mainGroup = 56E064EA28A6A803004B2B42;
+			packageReferences = (
+				56E0652D28AC8D27004B2B42 /* XCRemoteSwiftPackageReference "swift-collections" */,
+			);
 			productRefGroup = 56E064F428A6A803004B2B42 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -174,12 +188,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				56E0651E28AB305E004B2B42 /* Animation+CoreDataClass.swift in Sources */,
+				564A5EAB28B47357000E5635 /* NewSpriteState.swift in Sources */,
 				56E0652628AC80EA004B2B42 /* SpritePreviewModel.swift in Sources */,
 				56E0651528AB1632004B2B42 /* SpritePreviewDataBase.xcdatamodeld in Sources */,
 				56E0652828AC81AF004B2B42 /* AnimationModel.swift in Sources */,
+				564A5EA928B466A7000E5635 /* Publisher+Extensions.swift in Sources */,
 				56E0651728AB2CEE004B2B42 /* DataService.swift in Sources */,
 				56E0651F28AB305E004B2B42 /* Animation+CoreDataProperties.swift in Sources */,
-				56E064FD28A6A803004B2B42 /* GameScene.swift in Sources */,
+				56E064FD28A6A803004B2B42 /* SpriteLibraryScene.swift in Sources */,
 				56E0652A28AC8256004B2B42 /* SpriteProvider.swift in Sources */,
 				56E0651D28AB305E004B2B42 /* SpritePreview+CoreDataProperties.swift in Sources */,
 				56E0651C28AB305E004B2B42 /* SpritePreview+CoreDataClass.swift in Sources */,
@@ -394,6 +410,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		56E0652D28AC8D27004B2B42 /* XCRemoteSwiftPackageReference "swift-collections" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/apple/swift-collections.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.0.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		56E0652E28AC8D27004B2B42 /* OrderedCollections */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 56E0652D28AC8D27004B2B42 /* XCRemoteSwiftPackageReference "swift-collections" */;
+			productName = OrderedCollections;
+		};
+/* End XCSwiftPackageProductDependency section */
 
 /* Begin XCVersionGroup section */
 		56E0651328AB1632004B2B42 /* SpritePreviewDataBase.xcdatamodeld */ = {
