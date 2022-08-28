@@ -25,21 +25,25 @@ class SpritePreviewNode: SKSpriteNode {
         return label
     }()
     
-    let model: SpritePreviewModel
-    
     override var position: CGPoint {
         didSet {
             updateChildNodesPosition()
         }
     }
     
-    init(model: SpritePreviewModel, borderTexture: SKTexture) {
+    let model: SpritePreviewModel
+    
+    let onAddAnimation: ((String) -> Void)?
+    
+    init(model: SpritePreviewModel, borderTexture: SKTexture, onAddAnimation: ((String) -> Void)?) {
         self.model = model
+        self.onAddAnimation = onAddAnimation
         super.init(texture: borderTexture, color: .clear, size: borderTexture.size())
     }
     
     override init(texture: SKTexture?, color: UIColor, size: CGSize) {
-        self.model = SpritePreviewModel(name: "", preview: SKTexture(), animations: [])
+        self.model = SpritePreviewModel(name: "", uniqueID: "", preview: SKTexture(), animations: [])
+        self.onAddAnimation = nil
         super.init(texture: texture, color: color, size: size)
     }
     

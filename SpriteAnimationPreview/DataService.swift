@@ -45,8 +45,8 @@ class DataService {
         return SpritePreview(managedObjectContext: viewContext, name: name, previewData: previewData, animations: nil, creationDate: creationDate)
     }
     
-    func addAnimation(name: String, animationData: [Data], spriteName: String) async throws {
-        guard let sprite = try await fetchSprite(name: spriteName),
+    func addAnimation(name: String, animationData: [Data], spriteID: String) async throws {
+        guard let sprite = try await fetchSprite(uniqueID: spriteID),
               let newAnimation = Animation(managedObjectContext: viewContext, name: name, animationData: animationData)
         else { return }
         
@@ -56,6 +56,14 @@ class DataService {
     func fetchSprite(name: String) async throws -> SpritePreview? {
         let spriteFetchRequeset = SpritePreview.fetchRequest()
         spriteFetchRequeset.predicate = NSPredicate(format: "name == %@", name as NSString)
+        let previews = try spriteFetchRequeset.execute()
+        assert(previews.count == 0 || previews.count == 1, "There should either be 0 Sprites with this name, or 1 Sprite with this name.")
+        return previews.first
+    }
+    
+    func fetchSprite(uniqueID: String) async throws -> SpritePreview? {
+        let spriteFetchRequeset = SpritePreview.fetchRequest()
+        spriteFetchRequeset.predicate = NSPredicate(format: "uniqueID == %@", uniqueID as NSString)
         let previews = try spriteFetchRequeset.execute()
         assert(previews.count == 0 || previews.count == 1, "There should either be 0 Sprites with this name, or 1 Sprite with this name.")
         return previews.first

@@ -23,6 +23,7 @@ enum ButtonNames: String {
 
 protocol SpriteLibrarySceneDelegate: AnyObject {
     func didTapSelectFilesButton(_ button: SKLabelNode)
+    func didTapAddAnimationForSpriteWith(uniqueID: String)
 }
 
 class SpriteLibraryScene: SKScene {
@@ -103,12 +104,14 @@ private extension SpriteLibraryScene {
         var col: CGFloat = 0
         let borderTexture = atlas.textureNamed("Bordered_Rectangle")
         for (index, model) in spritePreviewModels.enumerated() {
-            let previewNode = SpritePreviewNode(model: model, borderTexture: borderTexture)
+            let previewNode = SpritePreviewNode(model: model, borderTexture: borderTexture) { [weak self] in
+                self?.spriteLibraryDelegate?.didTapAddAnimationForSpriteWith(uniqueID: $0)
+            }
             spritePreviewNodes.append(previewNode)
             addChild(previewNode)
             
             let y: CGFloat = previewNode.size.height * row + (size.height / 6.0) - 10
-            previewNode.position = CGPoint(x: (size.width / 6.0) * col + (size.width / 12.0) + 10, y: y)
+            previewNode.position = CGPoint(x: (size.width / 6.0) * col + (size.width / 12.0) + 20, y: y)
 
             col += 1
             if ((index + 1) % 6) == 0 {
@@ -117,6 +120,10 @@ private extension SpriteLibraryScene {
             }
             
         }
+    }
+    
+    private func addAnimationForSprite(with uniqueID: String) {
+        
     }
 }
 

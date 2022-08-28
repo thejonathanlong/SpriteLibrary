@@ -2,7 +2,7 @@
 //  SpritePreview+CoreDataProperties.swift
 //  SpriteAnimationPreview
 //
-//  Created by Jonathan Long on 8/16/22.
+//  Created by Jonathan Long on 8/27/22.
 //
 //
 
@@ -16,9 +16,10 @@ extension SpritePreview {
         return NSFetchRequest<SpritePreview>(entityName: "SpritePreview")
     }
 
+    @NSManaged public var creationDate: Date?
     @NSManaged public var name: String?
     @NSManaged public var previewData: Data?
-    @NSManaged public var creationDate: Date?
+    @NSManaged public var uniqueID: String?
     @NSManaged public var animations: NSOrderedSet?
 
 }
@@ -68,13 +69,15 @@ extension SpritePreview : Identifiable {
                       name: String,
                       previewData: Data,
                       animations: NSOrderedSet?,
-                      creationDate: Date = Date()) {
+                      creationDate: Date = Date(),
+                      uniqueID: String = "\(UUID())") {
         guard let entityDescription = NSEntityDescription.entity(forEntityName: SpritePreview.entityName, in: managedObjectContext) else {
             return nil
         }
         self.init(entity: entityDescription, insertInto: managedObjectContext)
 
         self.name = name
+        self.uniqueID = uniqueID
         self.previewData = previewData
         self.animations = animations
         self.creationDate = creationDate
