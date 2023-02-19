@@ -10,6 +10,6 @@ import Foundation
 import CoreData
 
 @objc(SpritePreview)
-public class SpritePreview: NSManagedObject {
+public final class SpritePreview: NSManagedObject {
 
 }

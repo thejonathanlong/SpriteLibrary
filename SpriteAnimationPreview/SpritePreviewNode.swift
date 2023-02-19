@@ -33,17 +33,20 @@ class SpritePreviewNode: SKSpriteNode {
     
     let model: SpritePreviewModel
     
-    let onAddAnimation: ((String) -> Void)?
     
-    init(model: SpritePreviewModel, borderTexture: SKTexture, onAddAnimation: ((String) -> Void)?) {
+    /// Called when an animation should be added.
+    /// Parameter is the uniqueID of the model.
+    let addAnimationCallback: ((String) -> Void)?
+    
+    init(model: SpritePreviewModel, borderTexture: SKTexture, addAnimation: ((String) -> Void)?) {
         self.model = model
-        self.onAddAnimation = onAddAnimation
+        self.addAnimationCallback = addAnimation
         super.init(texture: borderTexture, color: .clear, size: borderTexture.size())
     }
     
     override init(texture: SKTexture?, color: UIColor, size: CGSize) {
-        self.model = SpritePreviewModel(name: "", uniqueID: "", preview: SKTexture(), animations: [])
-        self.onAddAnimation = nil
+        self.model = SpritePreviewModel(name: "", uniqueID: "", preview: SKTexture(), previewImage: UIImage(), animations: [])
+        self.addAnimationCallback = nil
         super.init(texture: texture, color: color, size: size)
     }
     
@@ -52,9 +55,8 @@ class SpritePreviewNode: SKSpriteNode {
     }
     
     func touchUp(at point: CGPoint) {
-        
         if addAnimationButton.frame.contains(point) {
-            print("Add animation to \(model.name)")
+            addAnimationCallback?(model.uniqueID)
         }
     }
 }
@@ -73,5 +75,31 @@ private extension SpritePreviewNode {
         let previewNode = SKSpriteNode(texture: model.preview)
         addChild(previewNode)
         previewNode.position = CGPoint(x: 0, y: 0)
+        addAnimationSymbols()
+    }
+    
+    func addAnimationSymbols() {
+        // If there are no animations do not show the indicator
+        guard model.animations.count > 0 else { return }
+        
+        let radius = 3
+        let centerPoint = CGPoint(x: (size.width / 2.0) * 0,
+                                  y: (size.height / 2.0) * -1 + 10)
+        let numberOfAnimations = model.animations.count + 1
+        let startingPoint = CGPoint(x: centerPoint.x - CGFloat(radius * numberOfAnimations),
+                                    y: centerPoint.y)
+        for i in (0..<numberOfAnimations) {
+            let currentPosition = CGPoint(x: startingPoint.x * CGFloat(i),
+                                          y: startingPoint.y)
+            let circle = SKShapeNode(circleOfRadius: CGFloat(radius))
+            circle.position = currentPosition
+            circle.strokeColor = SKColor.white
+            circle.glowWidth = 0.1
+            
+            addChild(circle)
+        }
+        
+        
+        
     }
 }

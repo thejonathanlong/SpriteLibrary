@@ -7,27 +7,34 @@
 
 import SpriteKit
 
-struct SpritePreviewModel {
+struct SpritePreviewModel: Identifiable {
     let name: String
     let uniqueID: String
     let preview: SKTexture
+    let previewImage: UIImage
     let animations: [AnimationModel]
+    
+    var id: String {
+        uniqueID
+    }
     
     init(name: String,
          uniqueID: String,
          preview: SKTexture,
+         previewImage: UIImage,
          animations: [AnimationModel]) {
         self.name = name
         self.uniqueID = uniqueID
         self.preview = preview
         self.animations = animations
+        self.previewImage = previewImage
     }
     
     init?(spritePreview: SpritePreview?) {
         guard let name = spritePreview?.name,
               let uniqueID = spritePreview?.uniqueID,
-              let preview = spritePreview?.previewData,
-              let previewImage = UIImage(data: preview),
+              let previewData = spritePreview?.previewData,
+              let previewImage = UIImage(data: previewData),
               let animations = spritePreview?.animations?.array as? Array<Animation> else {
             return nil
         }
@@ -45,6 +52,7 @@ struct SpritePreviewModel {
         self.init(name: name,
                   uniqueID: uniqueID,
                   preview: SKTexture(image: previewImage),
+                  previewImage: previewImage,
                   animations: animationModels)
     }
 }

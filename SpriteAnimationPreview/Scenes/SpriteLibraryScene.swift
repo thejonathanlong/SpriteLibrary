@@ -1,5 +1,5 @@
 //
-//  GameScene.swift
+//  SpriteLibraryScene.swift
 //  SpriteAnimationPreview
 //
 //  Created by Jonathan Long on 8/12/22.
@@ -9,17 +9,6 @@ import Combine
 import GameplayKit
 import SpriteKit
 import SwiftUI
-
-enum ButtonNames: String {
-    case selectFiles
-    
-    var text: String {
-        switch self {
-            case .selectFiles:
-                return "+"
-        }
-    }
-}
 
 protocol SpriteLibrarySceneDelegate: AnyObject {
     func didTapSelectFilesButton(_ button: SKLabelNode)
@@ -32,7 +21,7 @@ class SpriteLibraryScene: SKScene {
     
     let atlas = SKTextureAtlas(named: "Sprites")
     
-    @ObservedObject var spriteProvider: SpriteProvider
+    @ObservedObject var spriteProvider: DataProvider<SpritePreview>
     
     var spritePreviewModels = [SpritePreviewModel]() {
         didSet {
@@ -45,18 +34,18 @@ class SpriteLibraryScene: SKScene {
     var cancellables = Set<AnyCancellable>()
     
     lazy var addNode: SKLabelNode = {
-        let addNode = SKLabelNode(text: "+ Sprite")
+        let addNode = SKLabelNode(text: ButtonNames.SceneLibrary.selectFiles.text)
         addNode.fontSize = 16
         addNode.position = CGPoint(x: 50, y: size.height - 50)
         return addNode
     }()
     
     init(size: CGSize,
-         spriteLibraryDelegate: SpriteLibrarySceneDelegate,
-         spriteProvider: SpriteProvider = SpriteProvider(itemsPerFetch: 18)) {
+         spriteProvider: DataProvider<SpritePreview> = DataProvider<SpritePreview>(itemsPerFetch: 18)) {
         self.spriteProvider = spriteProvider
         super.init(size: size)
-        self.spriteLibraryDelegate = spriteLibraryDelegate
+        // TODO: Change this from a delegate to an action publisher?
+        self.spriteLibraryDelegate = nil
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -67,17 +56,22 @@ class SpriteLibraryScene: SKScene {
         addChild(addNode)
         
         spriteProvider
-            .$state
-            .compactMap { (state: SpriteProvider.State) -> [SpritePreviewModel] in
-                switch state {
-                    case .empty, .loading:
-                        return []
-                    case .loaded(spritePreviews: let previews):
-                        return previews
-                }
-            }
+            .$models
             .assign(to: \.spritePreviewModels, onWeak: self)
             .store(in: &cancellables)
+//
+//        spriteProvider
+//            .$state
+//            .compactMap { (state: SpriteProvider.State) -> [SpritePreviewModel] in
+//                switch state {
+//                    case .empty, .loading:
+//                        return []
+//                    case .loaded(spritePreviews: let previews):
+//                        return previews
+//                }
+//            }
+//            .assign(to: \.spritePreviewModels, onWeak: self)
+//            .store(in: &cancellables)
         
         
     }
@@ -141,8 +135,6 @@ extension SpriteLibraryScene {
         if addNode.frame.contains(pos) {
             spriteLibraryDelegate?.didTapSelectFilesButton(addNode)
         }
-        
-        
     }
     
     func touchUp(touch: UITouch) {
