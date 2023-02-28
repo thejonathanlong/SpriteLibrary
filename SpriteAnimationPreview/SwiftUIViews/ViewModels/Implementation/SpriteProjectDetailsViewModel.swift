@@ -21,11 +21,10 @@ class SpriteProjectDetailsViewModel {
     
     var cancellables = Set<AnyCancellable>()
     
-    init(selectedProject: SpriteProjectModel, spriteProvider: SpriteProviderInterface) {
+    init(selectedProject: SpriteProjectModel, spriteProvider: AnyPublisher<[SpritePreviewModel], Never>) {
         self.selectedProject = selectedProject
 
         spriteProvider
-            .provider(for: selectedProject.id)
             .sink { [weak self] previewModels in
                 guard let self, !previewModels.isEmpty else { return }
                 self.selectedProject.update(newAssets: previewModels)

@@ -48,7 +48,7 @@ func dataStoreMiddleware(service: DataService) -> Middleware<AppState, AppAction
                 
             case .spriteAction(.fetchSprites(let projectId)):
                 let predicate = NSPredicate(format: "spriteBook.id == %@", projectId as NSString)
-                try service.spriteDataService.fetch(predicate: predicate)
+                try! service.spriteDataService.fetch(predicate: predicate)
 
             case .spriteAction(.chooseSpritePreview(_)):
                 break

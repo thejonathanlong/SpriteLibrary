@@ -36,11 +36,6 @@ class AppLifeCycleManager {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         logger.log(level: .debug, "Application directory: \(NSHomeDirectory())")
-        print("JLO: \(NSHomeDirectory())")
-
-//        store?.dispatch(.sticker(.fetchStickers))
-        
-
         return true
     }
     func application(_ application: UIApplication, configurationForConnecting connectingSceneSession: UISceneSession, options: UIScene.ConnectionOptions) -> UISceneConfiguration {

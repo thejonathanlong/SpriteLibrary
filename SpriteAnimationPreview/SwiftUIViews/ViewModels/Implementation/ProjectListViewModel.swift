@@ -16,7 +16,25 @@ protocol SpriteBookProviderRequester {
 class ProjectListViewModel: ObservableObject {
     @Published var projects = [SpriteProjectModel]()
     
-    @Published var selectedProjectModel: SpriteProjectDetailsViewModel? = nil
+    @Published var selectedProjectModel: SpriteProjectDetailsViewModel? = nil {
+        didSet {
+            detailsActionCancellable = selectedProjectModel?
+                .actionPublisher
+                .sink { [weak self] in
+                    guard let self, let selectedProject = self.selectedProject else { return }
+                    let action: Action
+                    switch $0 {
+                        case .addSprite:
+                            action = .addSprite(project: selectedProject)
+                        case .addAnimationToSprite(let spriteUniqueId):
+                            action = .addAnimationToSprite(spriteUniqueId: spriteUniqueId)
+                    }
+                    self.actionSubject.send(action)
+                }
+        }
+    }
+
+    var selectedProject: SpriteProjectModel?
     
     private let spriteBookProvider: AnyPublisher<[SpriteProjectModel], Never>
     
@@ -54,34 +72,11 @@ class ProjectListViewModel: ObservableObject {
     }
     
     func didSelect(_ project: SpriteProjectModel) {
-        detailsActionCancellable = nil
-        selectedProjectModel = SpriteProjectDetailsViewModel(selectedProject: project)
-        detailsActionCancellable = selectedProjectModel?
-            .actionPublisher
-            .sink { [weak self] in
-                let action: Action
-                switch $0 {
-                    case .addSprite:
-                        action = .addSprite(project: project)
-                    case .addAnimationToSprite(let spriteUniqueId):
-                        action = .addAnimationToSprite(spriteUniqueId: spriteUniqueId)
-                }
-                self?.actionSubject.send(action)
-            }
+        selectedProject = project
+        actionSubject.send(.didSelectProject(project: project))
     }
     
     func addProject() {
         actionSubject.send(.addProject)
     }
-    
-//    private func fetchAll() {
-//        Task {
-//            do {
-//                self.projects = try await dataService.fetchAll().compactMap { $0.viewModel }
-//            } catch {
-//                //TODO: Handle this..
-//            }
-//        }
-//
-//    }
 }

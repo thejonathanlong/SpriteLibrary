@@ -36,7 +36,7 @@ class StoreGlue: NSObject, UIDocumentPickerDelegate {
                     case let .didSelect(asset: SpritePreviewModel, id: String):
                         break
                     case let .didSelectProject(project: project):
-                        break
+                        self.didSelect(project: project, projectList: projectListViewModel)
                     case let .addSprite(project: project):
                         self.addSprite(to: project)
                     case let .addAnimationToSprite(spriteUniqueId: spriteUniqueId):
@@ -80,23 +80,17 @@ class StoreGlue: NSObject, UIDocumentPickerDelegate {
                     }
                     self?.store.dispatch(.spriteAction(.addSprite(name: name, url: url, project: project)))
                     self?.store.dispatch(.saveData)
+                    self?.store.dispatch(.spriteAction(.fetchSprites(projectId: project.id)))
                 })))
             }),
             .cancel(alertHandler: { _ in })
         ]
         )))
-        store.dispatch(.spriteAction(.fetchSprites(projectId: project.id)))
     }
-    
-    func documentPicker(_ controller: UIDocumentPickerViewController, didPickDocumentsAt urls: [URL]) {
-//        switch addState {
-//            case .some(.sprite(let newSpriteState)):
-//                addSprite(url: urls.first, newSpriteState: newSpriteState)
-//            case .some(.animation(name: let name, spriteID: let spriteID)):
-//                addAnimation(urls: urls, spriteID: spriteID, animationName: name)
-//            case .none:
-//                assert(false, "Did you forget to set the add state?")
-//        }
+
+    private func didSelect(project: SpriteProjectModel, projectList: ProjectListViewModel) {
+        let details = SpriteProjectDetailsViewModel(selectedProject: project, spriteProvider: store.state.dataService.spriteDataService.resultPublisher)
+        projectList.selectedProjectModel = details
     }
 }
 
