@@ -35,11 +35,9 @@ class DataObjectService<T: DataObject> {
     
     var state = State.unloaded
     
-    var actionPublisher: AnyPublisher<[T.ViewModel], Never> {
-        actionSubject.eraseToAnyPublisher()
-    }
+    lazy var resultPublisher: AnyPublisher<[T.ViewModel], Never> = resultSubject.eraseToAnyPublisher()
     
-    private var actionSubject = CurrentValueSubject<[T.ViewModel], Never>([])
+    private var resultSubject = CurrentValueSubject<[T.ViewModel], Never>([])
     
     init() {
         persistentContainer = NSPersistentCloudKitContainer(name: "SpritePreviewDataBase")
@@ -60,8 +58,8 @@ class DataObjectService<T: DataObject> {
         }
     }
     
-    @discardableResult func addSprite(name: String, previewData: Data, creationDate: Date = Date()) -> SpritePreview? {
-        return SpritePreview(managedObjectContext: viewContext, name: name, previewData: previewData, animations: nil, creationDate: creationDate)
+    @discardableResult func addSprite(name: String, previewData: Data, creationDate: Date = Date(), project: SpriteBook) -> SpritePreview? {
+        return SpritePreview(managedObjectContext: viewContext, name: name, previewData: previewData, project: project, animations: nil, creationDate: creationDate)
     }
     
     @discardableResult func addSpriteBook(name: String) -> SpriteBook? {
@@ -76,6 +74,15 @@ class DataObjectService<T: DataObject> {
         sprite.addToAnimations(newAnimation)
     }
     
+    func fetch(predicate: NSPredicate) throws -> [T] {
+        let fetchRequest = T.fetchRequest()
+        fetchRequest.sortDescriptors = T.sortDescriptors()
+        fetchRequest.predicate = predicate
+        let result = try viewContext.fetch(fetchRequest)
+        resultSubject.send(result.compactMap { $0.viewModel })
+        return result
+    }
+    
     func fetch(id: String) async throws -> T? {
         let fetchRequest = T.fetchRequest()
         fetchRequest.predicate = T.predicate(id: id)
@@ -88,7 +95,7 @@ class DataObjectService<T: DataObject> {
         fetchRequest.sortDescriptors = T.sortDescriptors()
         fetchRequest.predicate = NSPredicate(value: true)
         let result = try! viewContext.fetch(fetchRequest)
-        actionSubject.send(result.compactMap { $0.viewModel })
+        resultSubject.send(result.compactMap { $0.viewModel })
         return result
     }
     
@@ -160,11 +167,21 @@ class DataObjectService<T: DataObject> {
         }
     }
     
-    func fetchSpriteBook(uniqueID: String) async throws -> SpriteBook? {
+    func fetchSpriteBook(uniqueID: String) throws -> SpriteBook? {
         let spriteFetchRequeset = SpriteBook.fetchRequest()
-        spriteFetchRequeset.predicate = NSPredicate(format: "uniqueID == %@", uniqueID as NSString)
-        let books = try spriteFetchRequeset.execute()
-        assert(books.count == 0 || books.count == 1, "There should either be 0 Books with this uniqueID, or 1 Sprite with this uniqueID.")
+        spriteFetchRequeset.predicate = NSPredicate(format: "id == %@", uniqueID as NSString)
+        let books = try viewContext.fetch(spriteFetchRequeset)
+        assert(books.count == 0 || books.count == 1, "There should either be 0 Books with this uniqueID, or 1 book with this uniqueID.")
         return books.first
+    }
+    
+    func fetchSprites(with projectID: String) throws -> [SpritePreview] {
+        let fetchRequest = SpritePreview.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "uniqueID == %@", projectID as NSString)
+        fetchRequest.sortDescriptors = [
+            NSSortDescriptor(key: "creationDate", ascending: true)
+        ]
+        let results : [SpritePreview] = try viewContext.fetch(fetchRequest)
+        return results
     }
 }

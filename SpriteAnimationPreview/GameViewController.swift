@@ -18,7 +18,7 @@ class GameViewController: UIViewController, SpriteLibrarySceneDelegate, UIDocume
         case animation(name: String, spriteID: String)
     }
     
-    lazy var spriteLibraryScene = SpriteLibraryScene(size: CGSize(width: 480 * 2, height: 270 * 2), spriteLibraryDelegate: self)
+    lazy var spriteLibraryScene = SpriteLibraryScene(size: CGSize(width: 480 * 2, height: 270 * 2))
     
     let dataService = DataObjectService<SpritePreview>()
     
@@ -139,34 +139,34 @@ class GameViewController: UIViewController, SpriteLibrarySceneDelegate, UIDocume
     }
     
     func documentPicker(_ controller: UIDocumentPickerViewController, didPickDocumentsAt urls: [URL]) {
-        switch addState {
-            case .some(.sprite(let newSpriteState)):
-                addSprite(url: urls.first, newSpriteState: newSpriteState)
-            case .some(.animation(name: let name, spriteID: let spriteID)):
-                addAnimation(urls: urls, spriteID: spriteID, animationName: name)
-            case .none:
-                assert(false, "Did you forget to set the add state?")
-        }
+//        switch addState {
+//            case .some(.sprite(let newSpriteState)):
+//                addSprite(url: urls.first, newSpriteState: newSpriteState)
+//            case .some(.animation(name: let name, spriteID: let spriteID)):
+//                addAnimation(urls: urls, spriteID: spriteID, animationName: name)
+//            case .none:
+//                assert(false, "Did you forget to set the add state?")
+//        }
     }
 }
 
 private extension GameViewController {
-    private func addSprite(url: URL?, newSpriteState: NewSpriteState) {
-        guard let url = url,
-              let data = try? Data(contentsOf: url),
-              let image = UIImage(data: data)
-        else { return }
-        
-        // Let's just tell the scene to add this thing, then it can tell the spriteprovider thing (which needs a new name) to add the thing.
-        
-        var newSpriteState = newSpriteState
-        newSpriteState.previewImage = image
-        let spritePreview = dataService.addSprite(name: newSpriteState.name, previewData: data, creationDate: newSpriteState.creationDate)
-        if let spritePreviewModel = SpritePreviewModel(spritePreview: spritePreview) {
-            spriteLibraryScene.addNewSpritePreview(model: spritePreviewModel)
-        }
-        try? dataService.save()
-    }
+//    private func addSprite(url: URL?, newSpriteState: NewSpriteState) {
+//        guard let url = url,
+//              let data = try? Data(contentsOf: url),
+//              let image = UIImage(data: data)
+//        else { return }
+//
+//        // Let's just tell the scene to add this thing, then it can tell the spriteprovider thing (which needs a new name) to add the thing.
+//
+//        var newSpriteState = newSpriteState
+//        newSpriteState.previewImage = image
+//        let spritePreview = dataService.addSprite(name: newSpriteState.name, previewData: data, creationDate: newSpriteState.creationDate)
+//        if let spritePreviewModel = SpritePreviewModel(spritePreview: spritePreview) {
+//            spriteLibraryScene.addNewSpritePreview(model: spritePreviewModel)
+//        }
+//        try? dataService.save()
+//    }
     
     private func addAnimation(urls: [URL], spriteID: String, animationName: String) {
         let data = urls.compactMap { try? Data(contentsOf: $0) }

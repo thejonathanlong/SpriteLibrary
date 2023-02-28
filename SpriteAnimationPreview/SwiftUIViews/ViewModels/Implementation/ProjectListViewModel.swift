@@ -16,11 +16,13 @@ protocol SpriteBookProviderRequester {
 class ProjectListViewModel: ObservableObject {
     @Published var projects = [SpriteProjectModel]()
     
-    @Published var selectedProject: SpriteProjectModel? = nil
+    @Published var selectedProjectModel: SpriteProjectDetailsViewModel? = nil
     
     private let spriteBookProvider: AnyPublisher<[SpriteProjectModel], Never>
     
     private var cancellables = Set<AnyCancellable>()
+    
+    private var detailsActionCancellable: AnyCancellable?
     
     private var actionSubject = PassthroughSubject<Action, Never>()
     
@@ -32,6 +34,8 @@ class ProjectListViewModel: ObservableObject {
         case addProject
         case didSelect(asset: SpritePreviewModel, id: String)
         case didSelectProject(project: SpriteProjectModel)
+        case addSprite(project: SpriteProjectModel)
+        case addAnimationToSprite(spriteUniqueId: String)
     }
     
     init(spriteBookProvider: SpriteBookProviderRequester) {
@@ -50,7 +54,20 @@ class ProjectListViewModel: ObservableObject {
     }
     
     func didSelect(_ project: SpriteProjectModel) {
-        selectedProject = project
+        detailsActionCancellable = nil
+        selectedProjectModel = SpriteProjectDetailsViewModel(selectedProject: project)
+        detailsActionCancellable = selectedProjectModel?
+            .actionPublisher
+            .sink { [weak self] in
+                let action: Action
+                switch $0 {
+                    case .addSprite:
+                        action = .addSprite(project: project)
+                    case .addAnimationToSprite(let spriteUniqueId):
+                        action = .addAnimationToSprite(spriteUniqueId: spriteUniqueId)
+                }
+                self?.actionSubject.send(action)
+            }
     }
     
     func addProject() {

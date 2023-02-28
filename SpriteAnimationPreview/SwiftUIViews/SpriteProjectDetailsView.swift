@@ -9,12 +9,11 @@ import SpriteKit
 import SwiftUI
 
 struct SpriteProjectDetailsView: View {
-    
-    lazy var spriteLibraryScene = SpriteLibraryScene(size: CGSize(width: 480 * 2, height: 270 * 2)
-                                                     , spriteLibraryDelegate: self)
+
+    let detailsViewModel: SpriteProjectDetailsViewModel
     
     var body: some View {
-        SpriteView(scene: spriteLibraryScene)
+        SpriteView(scene: detailsViewModel.scene)
     }
 }
 

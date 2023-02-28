@@ -34,6 +34,7 @@ extension SpritePreview : Identifiable {
     convenience init?(managedObjectContext: NSManagedObjectContext,
                       name: String,
                       previewData: Data,
+                      project: SpriteBook,
                       animations: NSOrderedSet?,
                       creationDate: Date = Date(),
                       uniqueID: String = "\(UUID())") {
@@ -47,5 +48,6 @@ extension SpritePreview : Identifiable {
         self.previewData = previewData
         self.animations = animations
         self.creationDate = creationDate
+        self.spriteBook = project
     }
 }

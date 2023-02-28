@@ -39,4 +39,8 @@ struct SpriteProjectModel: Identifiable {
         self.id = id
         self.assets = assets
     }
+
+    public mutating func update(newAssets: [SpritePreviewModel]) {
+        assets = newAssets
+    }
 }

@@ -14,8 +14,8 @@ typealias Reducer<State, Action> = (inout State, Action) -> Void
 // MARK: - AppReducer
 func appReducer(state: inout AppState, action: AppAction) {
     switch action {
-        case .spriteBooks(let action):
-            spriteBookReducer(state: &state, action: action)
+        case .spriteAction(let action):
+            spriteActionReducer(state: &state, action: action)
         case .projectAction(let action):
             projectReducer(state: &state, action: action)
         case .saveData:
@@ -24,11 +24,17 @@ func appReducer(state: inout AppState, action: AppAction) {
     }
 }
 
-func spriteBookReducer(state: inout AppState, action: SpriteBookAction) {
+func spriteActionReducer(state: inout AppState, action: SpriteAction) {
     switch action {
-        case .fetchBooks:
-            break
+        case .initiateAddSprite(let alertAction):
+            Router.shared.route(to: .alert(.input(title: "Add Sprite", message: "Sprite Name", defaultText: "", actions: alertAction), { }))
             
+        case .chooseSpritePreview(let documentSelectionHandler):
+            Router.shared.route(to: .documentPicker(documentSelectionHandler: documentSelectionHandler))
+        case .addSprite://(name: let name, url: let url, creationDate: let creationDate):
+            break
+        case .fetchSprites:
+            break
     }
 }
 
@@ -41,6 +47,8 @@ func projectReducer(state: inout AppState, action: ProjectAction) {
                 }))
 //            AppLifeCycleManager.shared.router.route(to: .documentPicker)
         case .createProject:
+            break
+        case .fetchProjects:
             break
     }
 }

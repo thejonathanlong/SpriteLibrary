@@ -14,7 +14,7 @@ enum AppAction: CustomStringConvertible {
 //    case recording(RecordingAction)
 //    case sticker(StickerAction)
 //    case failure(Error)
-    case spriteBooks(SpriteBookAction)
+    case spriteAction(SpriteAction)
     case projectAction(ProjectAction)
     case saveData
 
@@ -46,10 +46,14 @@ enum ProjectAction {
     case initiateAddProject(alertActions: [AlertAction])
 //    case initiateAddProject(delegate: UIDocumentPickerDelegate)
     case createProject(name: String)
+    case fetchProjects
 }
 
-enum SpriteBookAction {
-    case fetchBooks
+enum SpriteAction {
+    case initiateAddSprite(alertAction: [AlertAction])
+    case chooseSpritePreview(documentSelectionHandler: ([URL]) -> Void)
+    case addSprite(name: String, url: URL, project: SpriteProjectModel)
+    case fetchSprites(projectId: String)
 }
 
 struct AppState {
@@ -61,9 +65,9 @@ struct AppState {
     lazy var dataService = DataService()
 }
 
-struct DataState {
-    lazy var spriteBookDataService = DataObjectService<SpriteBook>()
-}
+//struct DataState {
+//    lazy var spriteBookDataService = DataObjectService<SpriteBook>()
+//}
 
 struct SpriteBookState {
     var models: [SpriteProjectModel]

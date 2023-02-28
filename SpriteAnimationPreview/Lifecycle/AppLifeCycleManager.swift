@@ -80,12 +80,11 @@ class AppLifeCycleManager {
 extension AppLifeCycleManager: SpriteBookProviderRequester {
     var provider: AnyPublisher<[SpriteProjectModel], Never> {
         state.dataService
-            .spriteBookDataService
-            .actionPublisher
+            .projectDataService
+            .resultPublisher
     }
     
     func requestSpriteBooks() {
         storeGlue.requestSpriteBooks()
     }
-    
 }

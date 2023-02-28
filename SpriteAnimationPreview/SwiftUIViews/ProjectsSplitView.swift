@@ -29,8 +29,8 @@ struct ProjectsSplitView: View {
                     }
                 }
         } detail: {
-            if let selectedProject = projectListViewModel.selectedProject {
-                Text("\(selectedProject.name)")
+            if let selectedProjectModel = projectListViewModel.selectedProjectModel {
+                SpriteProjectDetailsView(detailsViewModel: selectedProjectModel)
             } else {
                 Text("I dunno")
             }

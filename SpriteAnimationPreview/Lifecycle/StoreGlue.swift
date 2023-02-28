@@ -18,7 +18,7 @@ class StoreGlue: NSObject, UIDocumentPickerDelegate {
     }
     
     func requestSpriteBooks() {
-        store.dispatch(.spriteBooks(.fetchBooks))
+        store.dispatch(.projectAction(.fetchProjects))
     }
     
     func subscribeTo(projectListViewModel: ProjectListViewModel) {
@@ -37,7 +37,10 @@ class StoreGlue: NSObject, UIDocumentPickerDelegate {
                         break
                     case let .didSelectProject(project: project):
                         break
-//                        self.showProjectDetails(project)
+                    case let .addSprite(project: project):
+                        self.addSprite(to: project)
+                    case let .addAnimationToSprite(spriteUniqueId: spriteUniqueId):
+                        break
                         
                 }
             }
@@ -59,8 +62,30 @@ class StoreGlue: NSObject, UIDocumentPickerDelegate {
         //TODO: This probably shouldn't be synchronous... but it is...
         store.dispatch(.projectAction(.createProject(name: name)))
         store.dispatch(.saveData)
-        store.dispatch(.spriteBooks(.fetchBooks))
+        store.dispatch(.projectAction(.fetchProjects))
         
+    }
+    
+    private func addSprite(to project: SpriteProjectModel) {
+        store.dispatch(.spriteAction(.initiateAddSprite(alertAction: [
+            .ok(alertHandler: { [weak self] alertController in
+                guard let name = alertController.textFields?.first?.text else {
+                    // TODO: can we update the alert with an error?
+                    return
+                }
+                self?.store.dispatch(.spriteAction(.chooseSpritePreview(documentSelectionHandler: { urls in
+                    guard let url = urls.first else {
+                        //TODO: throw or dispatch some sort of error is better
+                        return
+                    }
+                    self?.store.dispatch(.spriteAction(.addSprite(name: name, url: url, project: project)))
+                    self?.store.dispatch(.saveData)
+                })))
+            }),
+            .cancel(alertHandler: { _ in })
+        ]
+        )))
+        store.dispatch(.spriteAction(.fetchSprites(projectId: project.id)))
     }
     
     func documentPicker(_ controller: UIDocumentPickerViewController, didPickDocumentsAt urls: [URL]) {

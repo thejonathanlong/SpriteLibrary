@@ -17,11 +17,22 @@ protocol SpriteLibrarySceneDelegate: AnyObject {
 
 class SpriteLibraryScene: SKScene {
     
-    weak var spriteLibraryDelegate: SpriteLibrarySceneDelegate?
+//    weak var spriteLibraryDelegate: SpriteLibrarySceneDelegate?
     
-    let atlas = SKTextureAtlas(named: "Sprites")
+    enum Action {
+        case addSprite
+        case addAnimationToSprite(spriteUniqueId: String)
+    }
     
-    @ObservedObject var spriteProvider: DataProvider<SpritePreview>
+    private let atlas = SKTextureAtlas(named: "Sprites")
+    
+//    @ObservedObject var spriteProvider: DataProvider<SpritePreview>
+    
+    var actionPublisher: AnyPublisher<Action, Never> {
+        actionSubject.eraseToAnyPublisher()
+    }
+    
+    private let actionSubject = PassthroughSubject<Action, Never>()
     
     var spritePreviewModels = [SpritePreviewModel]() {
         didSet {
@@ -29,23 +40,27 @@ class SpriteLibraryScene: SKScene {
         }
     }
     
-    var spritePreviewNodes = [SpritePreviewNode]()
+    private var spritePreviewNodes = [SpritePreviewNode]()
     
-    var cancellables = Set<AnyCancellable>()
+    private var cancellables = Set<AnyCancellable>()
     
-    lazy var addNode: SKLabelNode = {
+    private lazy var addNode: SKLabelNode = {
         let addNode = SKLabelNode(text: ButtonNames.SceneLibrary.selectFiles.text)
         addNode.fontSize = 16
         addNode.position = CGPoint(x: 50, y: size.height - 50)
         return addNode
     }()
     
-    init(size: CGSize,
-         spriteProvider: DataProvider<SpritePreview> = DataProvider<SpritePreview>(itemsPerFetch: 18)) {
-        self.spriteProvider = spriteProvider
+    //    init(size: CGSize,
+    //         spriteProvider: DataProvider<SpritePreview> = DataProvider<SpritePreview>(itemsPerFetch: 18)) {
+    //        self.spriteProvider = spriteProvider
+//        super.init(size: size)
+//        // TODO: Change this from a delegate to an action publisher?
+//        self.spriteLibraryDelegate = nil
+//    }
+    
+    override init(size: CGSize) {
         super.init(size: size)
-        // TODO: Change this from a delegate to an action publisher?
-        self.spriteLibraryDelegate = nil
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -55,10 +70,10 @@ class SpriteLibraryScene: SKScene {
     override func didMove(to view: SKView) {
         addChild(addNode)
         
-        spriteProvider
-            .$models
-            .assign(to: \.spritePreviewModels, onWeak: self)
-            .store(in: &cancellables)
+//        spriteProvider
+//            .$models
+//            .assign(to: \.spritePreviewModels, onWeak: self)
+//            .store(in: &cancellables)
 //
 //        spriteProvider
 //            .$state
@@ -99,7 +114,7 @@ private extension SpriteLibraryScene {
         let borderTexture = atlas.textureNamed("Bordered_Rectangle")
         for (index, model) in spritePreviewModels.enumerated() {
             let previewNode = SpritePreviewNode(model: model, borderTexture: borderTexture) { [weak self] in
-                self?.spriteLibraryDelegate?.didTapAddAnimationForSpriteWith(uniqueID: $0)
+                self?.actionSubject.send(.addAnimationToSprite(spriteUniqueId: $0))
             }
             spritePreviewNodes.append(previewNode)
             addChild(previewNode)
@@ -133,7 +148,7 @@ extension SpriteLibraryScene {
     
     func touchUp(atPoint pos : CGPoint) {
         if addNode.frame.contains(pos) {
-            spriteLibraryDelegate?.didTapSelectFilesButton(addNode)
+            actionSubject.send(.addSprite)
         }
     }
     

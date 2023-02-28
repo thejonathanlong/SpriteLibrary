@@ -18,7 +18,7 @@ enum Route {
     case dismissPresentedViewController(DismissViewControllerHandler)
     case loading
     case warning(Warning)
-    case documentPicker(UIDocumentPickerDelegate)
+    case documentPicker(documentSelectionHandler: (([URL]) -> Void)?)
 //    case showProjectDetails(project: SpriteBookModel)
 
     enum Warning {
@@ -30,7 +30,7 @@ protocol RouteController {
     func route(to destination: Route)
 }
 
-class Router: RouteController {
+public class Router: NSObject, RouteController, UIDocumentPickerDelegate {
 
     static let shared = Router()
 
@@ -39,6 +39,8 @@ class Router: RouteController {
     private var logger = Logger(subsystem: "com.LonesomeDove.Router", category: "LonesomeDove")
     
     private var currentRouteStack: [Route] = []
+    
+    private var documentedSelected: (([URL]) -> Void)?
 
     func route(to destination: Route) {
         switch destination {
@@ -59,9 +61,9 @@ class Router: RouteController {
             case .warning(let warning):
                 break
             
-            case .documentPicker(let delegate):
-//                showDocumentPicker(delegate: UIDocumentPickerDelegate)
-                break
+            case .documentPicker(let documentSelectionHandler):
+                showDocumentPicker(documentsSelected: documentSelectionHandler)
+                
 //            case .showProjectDetails(let project):
 //                showProjectDetails(for: project)
         }
@@ -123,26 +125,24 @@ private extension Router {
         presentingViewController?.present(navigationController, animated: true)
     }
     
-    func showDocumentPicker(delegate: UIDocumentPickerDelegate, completion: (() -> Void)?) {
+    func showDocumentPicker(documentsSelected: (([URL]) -> Void)?) {
+        self.documentedSelected = documentsSelected
         let documentPicker = UIDocumentPickerViewController(forOpeningContentTypes: [UTType.png, UTType.gif])
-        documentPicker.delegate = delegate
+        documentPicker.delegate = self
         documentPicker.allowsMultipleSelection = true
         let presentingViewController = rootViewController?.presentedViewController ?? rootViewController
-        presentingViewController?.present(documentPicker, animated: true, completion: completion)
+        presentingViewController?.present(documentPicker, animated: true)
     }
     
-//    func documentPicker(_ controller: UIDocumentPickerViewController, didPickDocumentsAt urls: [URL]) {
-//        switch addState {
-//            case .some(.sprite(let newSpriteState)):
-//                addSprite(url: urls.first, newSpriteState: newSpriteState)
-//            case .some(.animation(name: let name, spriteID: let spriteID)):
-//                addAnimation(urls: urls, spriteID: spriteID, animationName: name)
-//            case .none:
-//                assert(false, "Did you forget to set the add state?")
-//        }
-//    }
+    
     
     func showProjectDetails(for project: SpriteProjectModel) {
         
+    }
+}
+
+public extension Router {
+    func documentPicker(_ controller: UIDocumentPickerViewController, didPickDocumentsAt urls: [URL]) {
+        documentedSelected?(urls)
     }
 }
