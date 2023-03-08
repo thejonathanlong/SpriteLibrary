@@ -66,12 +66,13 @@ class DataObjectService<T: DataObject> {
         return SpriteBook(managedObjectContext: viewContext, name: name, id: name, creationDate: Date())
     }
     
-    func addAnimation(name: String, animationData: [Data], spriteID: String) async throws {
-        guard let sprite = try await fetchSprite(uniqueID: spriteID),
+    func addAnimation(name: String, animationData: [Data], spriteID: String) {
+        guard let sprite = try? fetchSprites(with: spriteID).first,
               let newAnimation = Animation(managedObjectContext: viewContext, name: name, animationData: animationData)
         else { return }
         
         sprite.addToAnimations(newAnimation)
+        newAnimation.sprite = sprite
     }
     
     func fetch(predicate: NSPredicate) throws -> [T] {

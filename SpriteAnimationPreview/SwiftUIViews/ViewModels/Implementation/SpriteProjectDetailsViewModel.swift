@@ -34,7 +34,7 @@ class SpriteProjectDetailsViewModel {
     }
     
     lazy var scene: SpriteLibraryScene = {
-        let scene = SpriteLibraryScene(size: CGSize(width: 480 * 2, height: 270 * 2))
+        let scene = SpriteLibraryScene(size: CGSize(width: 560 * 2, height: 315 * 2))
         scene.spritePreviewModels = selectedProject.assets
         scene.scaleMode = .aspectFit
         scene.actionPublisher

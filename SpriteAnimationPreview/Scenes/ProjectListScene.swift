@@ -13,6 +13,10 @@ protocol ProjectSceneDelegate {
     func didTapAddProjectButton(_ button: SKLabelNode)
 }
 
+protocol SpriteLibrarySceneDelegate {
+    
+}
+
 class ProjectListScene: SKScene {
     
 //    weak var spriteLibraryDelegate: SpriteLibrarySceneDelegate?

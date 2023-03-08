@@ -31,10 +31,23 @@ func spriteActionReducer(state: inout AppState, action: SpriteAction) {
             
         case .chooseSpritePreview(let documentSelectionHandler):
             Router.shared.route(to: .documentPicker(documentSelectionHandler: documentSelectionHandler))
+
         case .addSprite://(name: let name, url: let url, creationDate: let creationDate):
             break
+
         case .fetchSprites:
             break
+
+        case .initiateAddAnimation(let alertActions):
+            Router.shared.route(to: .alert(.input(title: "Add Animation", message: "Animation Name", defaultText: "", actions: alertActions), {
+            }))
+
+        case .selectAnimationFrames(let documentSelectionHandler):
+            Router.shared.route(to: .documentPicker(documentSelectionHandler: documentSelectionHandler))
+
+        case .addAnimation:
+            break
+
     }
 }
 

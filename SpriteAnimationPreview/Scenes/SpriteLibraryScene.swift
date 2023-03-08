@@ -10,23 +10,16 @@ import GameplayKit
 import SpriteKit
 import SwiftUI
 
-protocol SpriteLibrarySceneDelegate: AnyObject {
-    func didTapSelectFilesButton(_ button: SKLabelNode)
-    func didTapAddAnimationForSpriteWith(uniqueID: String)
-}
-
 class SpriteLibraryScene: SKScene {
-    
-//    weak var spriteLibraryDelegate: SpriteLibrarySceneDelegate?
-    
+
     enum Action {
         case addSprite
         case addAnimationToSprite(spriteUniqueId: String)
+        case nextAnimation
+        case previousAnimation
     }
     
     private let atlas = SKTextureAtlas(named: "Sprites")
-    
-//    @ObservedObject var spriteProvider: DataProvider<SpritePreview>
     
     var actionPublisher: AnyPublisher<Action, Never> {
         actionSubject.eraseToAnyPublisher()
@@ -43,6 +36,8 @@ class SpriteLibraryScene: SKScene {
     private var spritePreviewNodes = [SpritePreviewNode]()
     
     private var cancellables = Set<AnyCancellable>()
+
+    private var touchdownStartingPoint = CGPoint.zero
     
     private lazy var addNode: SKLabelNode = {
         let addNode = SKLabelNode(text: ButtonNames.SceneLibrary.selectFiles.text)
@@ -50,14 +45,6 @@ class SpriteLibraryScene: SKScene {
         addNode.position = CGPoint(x: 50, y: size.height - 50)
         return addNode
     }()
-    
-    //    init(size: CGSize,
-    //         spriteProvider: DataProvider<SpritePreview> = DataProvider<SpritePreview>(itemsPerFetch: 18)) {
-    //        self.spriteProvider = spriteProvider
-//        super.init(size: size)
-//        // TODO: Change this from a delegate to an action publisher?
-//        self.spriteLibraryDelegate = nil
-//    }
     
     override init(size: CGSize) {
         super.init(size: size)
@@ -69,26 +56,6 @@ class SpriteLibraryScene: SKScene {
     
     override func didMove(to view: SKView) {
         addChild(addNode)
-        
-//        spriteProvider
-//            .$models
-//            .assign(to: \.spritePreviewModels, onWeak: self)
-//            .store(in: &cancellables)
-//
-//        spriteProvider
-//            .$state
-//            .compactMap { (state: SpriteProvider.State) -> [SpritePreviewModel] in
-//                switch state {
-//                    case .empty, .loading:
-//                        return []
-//                    case .loaded(spritePreviews: let previews):
-//                        return previews
-//                }
-//            }
-//            .assign(to: \.spritePreviewModels, onWeak: self)
-//            .store(in: &cancellables)
-        
-        
     }
     
     override func update(_ currentTime: TimeInterval) {
@@ -119,15 +86,14 @@ private extension SpriteLibraryScene {
             spritePreviewNodes.append(previewNode)
             addChild(previewNode)
             
-            let y: CGFloat = previewNode.size.height * row + (size.height / 6.0) - 10
-            previewNode.position = CGPoint(x: (size.width / 6.0) * col + (size.width / 12.0) + 20, y: y)
+            let y: CGFloat = previewNode.size.height * row + (size.height / 6.0) + (row * 20)
+            previewNode.position = CGPoint(x: (size.width / 6.0) * col + (size.width / 12.0) + 0, y: y)
 
             col += 1
             if ((index + 1) % 6) == 0 {
                 row -= 1
                 col = 0
             }
-            
         }
     }
     
@@ -139,7 +105,7 @@ private extension SpriteLibraryScene {
 // MARK: - Touch Handling
 extension SpriteLibraryScene {
     func touchDown(atPoint pos : CGPoint) {
-        
+        touchdownStartingPoint = pos
     }
     
     func touchMoved(toPoint pos : CGPoint) {
@@ -149,6 +115,12 @@ extension SpriteLibraryScene {
     func touchUp(atPoint pos : CGPoint) {
         if addNode.frame.contains(pos) {
             actionSubject.send(.addSprite)
+        } else if pos.x > touchdownStartingPoint.x {
+            // swipe right
+            print("JLO: swipe right")
+        } else {
+            // swipe left
+            print("JLO: swipe left")
         }
     }
     

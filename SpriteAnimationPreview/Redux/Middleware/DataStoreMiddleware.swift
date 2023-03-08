@@ -33,6 +33,7 @@ func dataStoreMiddleware(service: DataService) -> Middleware<AppState, AppAction
                 // We should return an appstate error if this throws
 //                Task {
                     try! service.projectDataService.save()
+                try! service.spriteDataService.save()
 //                }
             case let .spriteAction(.addSprite(name: name, url: url, project: project)):
                 guard let data = try? Data(contentsOf: url) else {
@@ -45,15 +46,24 @@ func dataStoreMiddleware(service: DataService) -> Middleware<AppState, AppAction
                     //TODO: Throw error? Log error at least?
                     fatalError("Didn't get a project for \(project.id)")
                 }
+
+            case .spriteAction(.addAnimation(let animationName, let spriteUniqueId, let animationURLs)):
+                let data = animationURLs.compactMap { try? Data(contentsOf: $0) }
+                service.spriteDataService.addAnimation(name: animationName, animationData: data, spriteID: spriteUniqueId)
                 
             case .spriteAction(.fetchSprites(let projectId)):
                 let predicate = NSPredicate(format: "spriteBook.id == %@", projectId as NSString)
-                try! service.spriteDataService.fetch(predicate: predicate)
+                _ = try! service.spriteDataService.fetch(predicate: predicate)
 
-            case .spriteAction(.chooseSpritePreview(_)):
+            case .spriteAction(.chooseSpritePreview):
                 break
-            case .spriteAction(.initiateAddSprite(_)):
+            case .spriteAction(.initiateAddSprite):
                 break
+            case .spriteAction(.initiateAddAnimation):
+                break
+            case .spriteAction(.selectAnimationFrames):
+                break
+
         }
         return Empty().eraseToAnyPublisher()
     }

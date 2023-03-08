@@ -40,7 +40,7 @@ class StoreGlue: NSObject, UIDocumentPickerDelegate {
                     case let .addSprite(project: project):
                         self.addSprite(to: project)
                     case let .addAnimationToSprite(spriteUniqueId: spriteUniqueId):
-                        break
+                        self.addAnimation(to: spriteUniqueId, projectId: projectListViewModel.selectedProject?.id)
                         
                 }
             }
@@ -69,7 +69,7 @@ class StoreGlue: NSObject, UIDocumentPickerDelegate {
     private func addSprite(to project: SpriteProjectModel) {
         store.dispatch(.spriteAction(.initiateAddSprite(alertAction: [
             .ok(alertHandler: { [weak self] alertController in
-                guard let name = alertController.textFields?.first?.text else {
+                guard let name = alertController.textFields?.first?.text, !name.isEmpty else {
                     // TODO: can we update the alert with an error?
                     return
                 }
@@ -86,6 +86,26 @@ class StoreGlue: NSObject, UIDocumentPickerDelegate {
             .cancel(alertHandler: { _ in })
         ]
         )))
+    }
+
+    private func addAnimation(to spriteUniqueId: String, projectId: String?) {
+        store.dispatch(.spriteAction(.initiateAddAnimation(alertAction: [
+            .ok(alertHandler: { [weak self] alertController in
+                guard let name = alertController.textFields?.first?.text, !name.isEmpty else {
+                    // TODO: can we update the alert with an error?
+                    return
+                }
+                self?.store.dispatch(.spriteAction(.selectAnimationFrames(documentSelectionHandler: { urls in
+                    self?.store.dispatch(.spriteAction(.addAnimation(animationName: name, spriteUniqueId: spriteUniqueId, animationURLs: urls)))
+                    self?.store.dispatch(.saveData)
+                    if let projectId {
+                        // This shouldn't be nil
+                        self?.store.dispatch(.spriteAction(.fetchSprites(projectId: projectId)))
+                    }
+                })))
+            }),
+            .cancel(alertHandler: { _ in })
+        ])))
     }
 
     private func didSelect(project: SpriteProjectModel, projectList: ProjectListViewModel) {

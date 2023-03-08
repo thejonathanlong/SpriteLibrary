@@ -28,6 +28,9 @@ enum SpriteAction {
     case chooseSpritePreview(documentSelectionHandler: ([URL]) -> Void)
     case addSprite(name: String, url: URL, project: SpriteProjectModel)
     case fetchSprites(projectId: String)
+    case initiateAddAnimation(alertAction: [AlertAction])
+    case selectAnimationFrames(documentSelectionHandler: ([URL]) -> Void)
+    case addAnimation(animationName: String, spriteUniqueId: String, animationURLs: [URL])
 }
 
 struct AppState {
