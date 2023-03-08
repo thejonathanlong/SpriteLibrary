@@ -112,7 +112,7 @@ private extension SpriteLibraryScene {
     private func runAnimation(for spritePreviewNode: SpritePreviewNode?, spritePreviewModel: SpritePreviewModel, at nextAnimationIndex: Int) {
         spritePreviewNode?.removeAllActions()
         guard nextAnimationIndex >= 0, nextAnimationIndex < spritePreviewModel.animations.count else {
-            // TODO: remove actions and go back to poster?
+            spritePreviewNode?.nameLabel.text = spritePreviewModel.name
             return
         }
         let animation = spritePreviewModel.animations[nextAnimationIndex]
@@ -120,6 +120,7 @@ private extension SpriteLibraryScene {
         let animationAction = SKAction.animate(with: animation.textures, timePerFrame: 0.1)
         let forever = SKAction.repeatForever(animationAction)
         spritePreviewNode?.run(forever)
+        spritePreviewNode?.nameLabel.text = animation.name
         currentAnimationIndex = nextAnimationIndex
 
     }
