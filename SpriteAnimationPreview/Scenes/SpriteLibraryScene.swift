@@ -34,6 +34,8 @@ class SpriteLibraryScene: SKScene {
     }
     
     private var spritePreviewNodes = [SpritePreviewNode]()
+
+    private var currentAnimationIndex: Int? = nil
     
     private var cancellables = Set<AnyCancellable>()
 
@@ -97,8 +99,29 @@ private extension SpriteLibraryScene {
         }
     }
     
-    private func addAnimationForSprite(with uniqueID: String) {
-        
+    private func showNextAnimation(for spritePreviewNode: SpritePreviewNode?, spritePreviewModel: SpritePreviewModel) {
+        let nextAnimationIndex = (currentAnimationIndex ?? 0) + 1
+        runAnimation(for: spritePreviewNode, spritePreviewModel: spritePreviewModel, at: nextAnimationIndex)
+    }
+
+    private func showPreviousAnimation(for spritePreviewNode: SpritePreviewNode?, spritePreviewModel: SpritePreviewModel) {
+        let nextAnimationIndex = (currentAnimationIndex ?? 0) - 1
+        runAnimation(for: spritePreviewNode, spritePreviewModel: spritePreviewModel, at: nextAnimationIndex)
+    }
+
+    private func runAnimation(for spritePreviewNode: SpritePreviewNode?, spritePreviewModel: SpritePreviewModel, at nextAnimationIndex: Int) {
+        spritePreviewNode?.removeAllActions()
+        guard nextAnimationIndex >= 0, nextAnimationIndex < spritePreviewModel.animations.count else {
+            // TODO: remove actions and go back to poster?
+            return
+        }
+        let animation = spritePreviewModel.animations[nextAnimationIndex]
+        // TODO: Time per frame should be user specified. Either at creation of the animation or as a preference somewhere.
+        let animationAction = SKAction.animate(with: animation.textures, timePerFrame: 0.1)
+        let forever = SKAction.repeatForever(animationAction)
+        spritePreviewNode?.run(forever)
+        currentAnimationIndex = nextAnimationIndex
+
     }
 }
 
@@ -113,15 +136,26 @@ extension SpriteLibraryScene {
     }
     
     func touchUp(atPoint pos : CGPoint) {
+        let previewNode = spritePreviewNodes.filter({ $0.frame.contains(pos) }).first
         if addNode.frame.contains(pos) {
             actionSubject.send(.addSprite)
         } else if pos.x > touchdownStartingPoint.x {
             // swipe right
-            print("JLO: swipe right")
+            let previewNodeIndex = spritePreviewNodes.firstIndex { $0 == previewNode }
+            if let previewNodeIndex, previewNodeIndex >= 0 && previewNodeIndex < spritePreviewModels.count {
+                let previewModel = spritePreviewModels[previewNodeIndex]
+                showPreviousAnimation(for: previewNode, spritePreviewModel: previewModel)
+            }
         } else {
-            // swipe left
-            print("JLO: swipe left")
+            // swipe right
+            let previewNodeIndex = spritePreviewNodes.firstIndex { $0 == previewNode }
+            if let previewNodeIndex, previewNodeIndex >= 0 && previewNodeIndex < spritePreviewModels.count {
+                let previewModel = spritePreviewModels[previewNodeIndex]
+                showNextAnimation(for: previewNode, spritePreviewModel: previewModel)
+            }
+
         }
+        touchdownStartingPoint = .zero
     }
     
     func touchUp(touch: UITouch) {

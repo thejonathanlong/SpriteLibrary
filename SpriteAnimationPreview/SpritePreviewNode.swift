@@ -24,6 +24,9 @@ class SpritePreviewNode: SKSpriteNode {
         label.fontColor = SKColor.white
         return label
     }()
+
+    lazy var previewNode = SKSpriteNode(texture: model.preview)
+    lazy var previewActionNode = SKSpriteNode(texture: model.preview)
     
     override var position: CGPoint {
         didSet {
@@ -53,6 +56,18 @@ class SpritePreviewNode: SKSpriteNode {
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+
+    public override func run(_ action: SKAction) {
+        previewActionNode.isHidden = false
+        previewActionNode.run(action)
+        previewNode.isHidden = true
+    }
+
+    public override func removeAllActions() {
+        previewActionNode.removeAllActions()
+        previewNode.isHidden = false
+        previewActionNode.isHidden = true
+    }
     
     func touchUp(at point: CGPoint) {
         if addAnimationButton.frame.contains(point) {
@@ -71,10 +86,12 @@ private extension SpritePreviewNode {
         
         let nameLabelY = -(size.height / 2.0) + 20
         nameLabel.position = CGPoint(x: 0, y: nameLabelY)
-        
-        let previewNode = SKSpriteNode(texture: model.preview)
+
+        addChild(previewActionNode)
         addChild(previewNode)
         previewNode.position = CGPoint(x: 0, y: 0)
+        previewActionNode.position = CGPoint(x: 0, y: 0)
+        previewActionNode.isHidden = true
         addAnimationSymbols()
     }
     
