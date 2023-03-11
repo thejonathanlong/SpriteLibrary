@@ -1,5 +1,5 @@
 //
-//  SpriteBookModel.swift
+//  SpriteCollectionModel.swift
 //  SpriteAnimationPreview
 //
 //  Created by Jonathan Long on 10/21/22.

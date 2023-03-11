@@ -17,7 +17,7 @@ class StoreGlue: NSObject, UIDocumentPickerDelegate {
         self.store = store
     }
     
-    func requestSpriteBooks() {
+    func requestSpriteCollections() {
         store.dispatch(.projectAction(.fetchProjects))
     }
     

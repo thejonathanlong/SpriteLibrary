@@ -15,8 +15,6 @@ class SpriteLibraryScene: SKScene {
     enum Action {
         case addSprite
         case addAnimationToSprite(spriteUniqueId: String)
-        case nextAnimation
-        case previousAnimation
     }
     
     private let atlas = SKTextureAtlas(named: "Sprites")

@@ -37,6 +37,6 @@ struct AppState {
     var dataService = DataService()
 }
 
-struct SpriteBookState {
+struct SpriteCollectionState {
     var models: [SpriteProjectModel]
 }

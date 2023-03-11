@@ -19,7 +19,7 @@ enum Route {
     case loading
     case warning(Warning)
     case documentPicker(documentSelectionHandler: (([URL]) -> Void)?)
-//    case showProjectDetails(project: SpriteBookModel)
+//    case showProjectDetails(project: SpriteCollectionModel)
 
     enum Warning {
     }

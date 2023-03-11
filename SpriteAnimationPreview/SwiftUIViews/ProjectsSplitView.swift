@@ -14,20 +14,28 @@ protocol AddProjectHandler {
 
 struct ProjectsSplitView: View {
     @ObservedObject var projectListViewModel: ProjectListViewModel
-    
+
     var body: some View {
-        NavigationSplitView {
-            ProjectList(projectListViewModel: projectListViewModel)
-                .toolbar {
-                    HStack {
-                        Button {
-                            projectListViewModel.addProject()
-                        } label: {
-                            Image(systemName: "plus.square.fill")
-                                .font(.title2)
+        NavigationSplitView() {
+            NavigationLink {
+                if let selectedProjectModel = projectListViewModel.selectedProjectModel {
+                    SpriteProjectDetailsView(detailsViewModel: selectedProjectModel)
+                } else {
+                    Text("I dunno")
+                }
+            } label: {
+                ProjectList(projectListViewModel: projectListViewModel)
+                    .toolbar {
+                        HStack {
+                            Button {
+                                projectListViewModel.addProject()
+                            } label: {
+                                Image(systemName: "plus.square.fill")
+                                    .font(.title2)
+                            }
                         }
                     }
-                }
+            }
         } detail: {
             if let selectedProjectModel = projectListViewModel.selectedProjectModel {
                 SpriteProjectDetailsView(detailsViewModel: selectedProjectModel)

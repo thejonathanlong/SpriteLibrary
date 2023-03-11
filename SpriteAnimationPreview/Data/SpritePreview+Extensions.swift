@@ -25,7 +25,7 @@ extension SpritePreview: DataObject {
     }
 }
 
-extension SpritePreview : Identifiable {
+extension SpritePreview {
     
     private static var entityName: String {
         "SpritePreview"
@@ -34,8 +34,8 @@ extension SpritePreview : Identifiable {
     convenience init?(managedObjectContext: NSManagedObjectContext,
                       name: String,
                       previewData: Data,
-                      project: SpriteBook,
-                      animations: NSOrderedSet?,
+                      project: SpriteCollection,
+                      animations: NSSet?,
                       creationDate: Date = Date(),
                       uniqueID: String = "\(UUID())") {
         guard let entityDescription = NSEntityDescription.entity(forEntityName: SpritePreview.entityName, in: managedObjectContext) else {
@@ -48,6 +48,6 @@ extension SpritePreview : Identifiable {
         self.previewData = previewData
         self.animations = animations
         self.creationDate = creationDate
-        self.spriteBook = project
+        self.collection = project
     }
 }

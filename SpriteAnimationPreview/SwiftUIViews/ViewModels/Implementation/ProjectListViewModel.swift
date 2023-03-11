@@ -8,9 +8,9 @@
 import Combine
 import SwiftUI
 
-protocol SpriteBookProviderRequester {
+protocol SpriteCollectionProviderRequester {
     var provider: AnyPublisher<[SpriteProjectModel], Never> { get }
-    func requestSpriteBooks()
+    func requestSpriteCollections()
 }
 
 class ProjectListViewModel: ObservableObject {
@@ -56,7 +56,7 @@ class ProjectListViewModel: ObservableObject {
         case addAnimationToSprite(spriteUniqueId: String)
     }
     
-    init(spriteBookProvider: SpriteBookProviderRequester) {
+    init(spriteBookProvider: SpriteCollectionProviderRequester) {
         self.spriteBookProvider = spriteBookProvider.provider
         
         spriteBookProvider
@@ -64,7 +64,7 @@ class ProjectListViewModel: ObservableObject {
             .assign(to: \.projects, onWeak: self)
             .store(in: &cancellables)
         
-        spriteBookProvider.requestSpriteBooks()
+        spriteBookProvider.requestSpriteCollections()
     }
     
     func didSelect(_ asset: SpritePreviewModel) {

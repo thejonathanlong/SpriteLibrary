@@ -1,5 +1,5 @@
 //
-//  SpriteBook+Extensions.swift
+//  SpriteCollection+Extensions.swift
 //  SpriteAnimationPreview
 //
 //  Created by Jonathan Long on 10/21/22.
@@ -8,7 +8,7 @@
 import CoreData
 import Foundation
 
-extension SpriteBook: DataObject {
+extension SpriteCollection: DataObject {
     var viewModel: SpriteProjectModel? {
         guard let name, let creationDate, let id else { return nil }
         let spritePreviews = spritePreviews?.compactMap { $0 as? SpritePreview }.compactMap { $0.viewModel }
@@ -30,17 +30,17 @@ extension SpriteBook: DataObject {
     }
 }
 
-extension SpriteBook : Identifiable {
+extension SpriteCollection {
 
     private static var entityName: String {
-        "SpriteBook"
+        "SpriteCollection"
     }
     
     convenience init?(managedObjectContext: NSManagedObjectContext,
                       name: String,
                       id: String,
                       creationDate: Date) {
-        guard let entityDescription = NSEntityDescription.entity(forEntityName: SpriteBook.entityName, in: managedObjectContext) else {
+        guard let entityDescription = NSEntityDescription.entity(forEntityName: SpriteCollection.entityName, in: managedObjectContext) else {
             return nil
         }
         self.init(entity: entityDescription, insertInto: managedObjectContext)

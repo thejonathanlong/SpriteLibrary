@@ -24,7 +24,7 @@ class AppLifeCycleManager {
     
     lazy var storeGlue = StoreGlue(store: store)
     
-    lazy var spriteBookDataService = DataObjectService<SpriteBook>()
+    lazy var spriteCollectionDataService = DataObjectService<SpriteCollection>()
     
     lazy var state = AppState()
 
@@ -72,14 +72,14 @@ class AppLifeCycleManager {
     func sceneDidEnterBackground(_ scene: UIScene) { }
 }
 
-extension AppLifeCycleManager: SpriteBookProviderRequester {
+extension AppLifeCycleManager: SpriteCollectionProviderRequester {
     var provider: AnyPublisher<[SpriteProjectModel], Never> {
         state.dataService
             .projectDataService
             .resultPublisher
     }
     
-    func requestSpriteBooks() {
-        storeGlue.requestSpriteBooks()
+    func requestSpriteCollections() {
+        storeGlue.requestSpriteCollections()
     }
 }

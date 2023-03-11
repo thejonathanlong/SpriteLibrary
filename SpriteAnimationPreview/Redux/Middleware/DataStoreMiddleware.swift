@@ -9,7 +9,7 @@ import Combine
 import Foundation
 
 class DataService {
-    lazy var projectDataService = DataObjectService<SpriteBook>()
+    lazy var projectDataService = DataObjectService<SpriteCollection>()
     lazy var spriteDataService = DataObjectService<SpritePreview>()
 }
 
@@ -24,7 +24,7 @@ func dataStoreMiddleware(service: DataService) -> Middleware<AppState, AppAction
 //                }
                 
             case let .projectAction(.createProject(name)):
-                    service.projectDataService.addSpriteBook(name: name)
+                    service.projectDataService.addSpriteCollection(name: name)
                 
             case .projectAction(.initiateAddProject):
                 break
@@ -40,7 +40,7 @@ func dataStoreMiddleware(service: DataService) -> Middleware<AppState, AppAction
                     // TODO: Throwing or dispatching an error is better...
                     return Empty().eraseToAnyPublisher()
                 }
-                if let spriteProject = try? service.projectDataService.fetchSpriteBook(uniqueID: project.id) {
+                if let spriteProject = try? service.projectDataService.fetchSpriteCollection(uniqueID: project.id) {
                     service.projectDataService.addSprite(name: name, previewData: data, project: spriteProject)
                 } else {
                     //TODO: Throw error? Log error at least?
@@ -52,7 +52,7 @@ func dataStoreMiddleware(service: DataService) -> Middleware<AppState, AppAction
                 service.spriteDataService.addAnimation(name: animationName, animationData: data, spriteID: spriteUniqueId)
                 
             case .spriteAction(.fetchSprites(let projectId)):
-                let predicate = NSPredicate(format: "spriteBook.id == %@", projectId as NSString)
+                let predicate = NSPredicate(format: "collection.id == %@", projectId as NSString)
                 _ = try! service.spriteDataService.fetch(predicate: predicate)
 
             case .spriteAction(.chooseSpritePreview):

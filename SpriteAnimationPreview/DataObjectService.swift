@@ -42,6 +42,7 @@ class DataObjectService<T: DataObject> {
     init() {
         persistentContainer = NSPersistentCloudKitContainer(name: "SpritePreviewDataBase")
         viewContext = persistentContainer.viewContext
+        viewContext.automaticallyMergesChangesFromParent = true
         persistentContainer.loadPersistentStores(completionHandler: { [weak self] (_, error) in
             if let error = error as NSError? {
                 fatalError("Unresolved error \(error), \(error.userInfo)")
@@ -58,12 +59,12 @@ class DataObjectService<T: DataObject> {
         }
     }
     
-    @discardableResult func addSprite(name: String, previewData: Data, creationDate: Date = Date(), project: SpriteBook) -> SpritePreview? {
+    @discardableResult func addSprite(name: String, previewData: Data, creationDate: Date = Date(), project: SpriteCollection) -> SpritePreview? {
         return SpritePreview(managedObjectContext: viewContext, name: name, previewData: previewData, project: project, animations: nil, creationDate: creationDate)
     }
     
-    @discardableResult func addSpriteBook(name: String) -> SpriteBook? {
-        return SpriteBook(managedObjectContext: viewContext, name: name, id: name, creationDate: Date())
+    @discardableResult func addSpriteCollection(name: String) -> SpriteCollection? {
+        return SpriteCollection(managedObjectContext: viewContext, name: name, id: name, creationDate: Date())
     }
     
     func addAnimation(name: String, animationData: [Data], spriteID: String) {
@@ -150,8 +151,8 @@ class DataObjectService<T: DataObject> {
         }
     }
     
-    func fetchSpriteBooks(offset: Int, limit: Int) async throws -> [SpriteBook] {
-        let fetchRequest = SpriteBook.fetchRequest()
+    func fetchSpriteCollections(offset: Int, limit: Int) async throws -> [SpriteCollection] {
+        let fetchRequest = SpriteCollection.fetchRequest()
         fetchRequest.fetchOffset = offset
         fetchRequest.fetchLimit = limit
         fetchRequest.predicate = NSPredicate(value: true)
@@ -160,7 +161,7 @@ class DataObjectService<T: DataObject> {
         ]
         
         do {
-            let results : [SpriteBook] = try viewContext.fetch(fetchRequest)
+            let results : [SpriteCollection] = try viewContext.fetch(fetchRequest)
             return results
         } catch let error {
             print("JLO: \(error)")
@@ -168,8 +169,8 @@ class DataObjectService<T: DataObject> {
         }
     }
     
-    func fetchSpriteBook(uniqueID: String) throws -> SpriteBook? {
-        let spriteFetchRequeset = SpriteBook.fetchRequest()
+    func fetchSpriteCollection(uniqueID: String) throws -> SpriteCollection? {
+        let spriteFetchRequeset = SpriteCollection.fetchRequest()
         spriteFetchRequeset.predicate = NSPredicate(format: "id == %@", uniqueID as NSString)
         let books = try viewContext.fetch(spriteFetchRequeset)
         assert(books.count == 0 || books.count == 1, "There should either be 0 Books with this uniqueID, or 1 book with this uniqueID.")
