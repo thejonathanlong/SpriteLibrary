@@ -24,8 +24,6 @@ class AppLifeCycleManager {
     
     lazy var storeGlue = StoreGlue(store: store)
     
-    lazy var spriteCollectionDataService = DataObjectService<SpriteCollection>()
-    
     lazy var state = AppState()
 
     var logger = Logger(subsystem: "com.PocketPixels", category: "PocketPixels")

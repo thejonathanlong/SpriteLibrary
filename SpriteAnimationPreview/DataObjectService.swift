@@ -21,36 +21,14 @@ protocol DataObject: NSManagedObject {
 
 class DataObjectService<T: DataObject> {
     
-    enum State {
-        case loaded
-        case unloaded
-    }
-    
-    
-//    var dataQueue = DispatchQueue(label: "com.jlongstudios.dataService")
-    
-    let persistentContainer: NSPersistentCloudKitContainer
-    
-    var viewContext: NSManagedObjectContext
-    
-    var state = State.unloaded
+    let viewContext: NSManagedObjectContext
     
     lazy var resultPublisher: AnyPublisher<[T.ViewModel], Never> = resultSubject.eraseToAnyPublisher()
     
     private var resultSubject = CurrentValueSubject<[T.ViewModel], Never>([])
     
-    init() {
-        persistentContainer = NSPersistentCloudKitContainer(name: "SpritePreviewDataBase")
-        viewContext = persistentContainer.viewContext
-        viewContext.automaticallyMergesChangesFromParent = true
-        persistentContainer.loadPersistentStores(completionHandler: { [weak self] (_, error) in
-            if let error = error as NSError? {
-                fatalError("Unresolved error \(error), \(error.userInfo)")
-            }
-            self?.state = .loaded
-        })
-        let urls = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
-        print("JLO: \(urls[urls.count-1] as URL)")
+    init(viewContext: NSManagedObjectContext) {
+        self.viewContext = viewContext
     }
     
     func save() throws {

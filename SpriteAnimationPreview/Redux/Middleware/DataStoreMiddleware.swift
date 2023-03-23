@@ -6,11 +6,39 @@
 //
 
 import Combine
+import CoreData
 import Foundation
 
 class DataService {
-    lazy var projectDataService = DataObjectService<SpriteCollection>()
-    lazy var spriteDataService = DataObjectService<SpritePreview>()
+    lazy var projectDataService = DataObjectService<SpriteCollection>(viewContext: viewContext)
+    lazy var spriteDataService = DataObjectService<SpritePreview>(viewContext: viewContext)
+
+    let persistentContainer: NSPersistentCloudKitContainer
+
+    let viewContext: NSManagedObjectContext
+
+    init() {
+        persistentContainer = NSPersistentCloudKitContainer(name: "SpritePreviewDataBase")
+        viewContext = persistentContainer.viewContext
+        viewContext.automaticallyMergesChangesFromParent = true
+        persistentContainer.loadPersistentStores(completionHandler: { (_, error) in
+            if let error = error as NSError? {
+                fatalError("Unresolved error \(error), \(error.userInfo)")
+            }
+        })
+
+#if DEBUG
+        do {
+            // Use the container to initialize the development schema.
+            try persistentContainer.initializeCloudKitSchema(options: [])
+        } catch {
+            // Handle any errors.
+        }
+#endif
+
+        let urls = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
+        print("JLO: \(urls[urls.count-1] as URL)")
+    }
 }
 
 func dataStoreMiddleware(service: DataService) -> Middleware<AppState, AppAction> {
