@@ -40,7 +40,7 @@ class ProjectListViewModel: ObservableObject {
         }
     }
 
-    var selectedProject: SpriteProjectModel?
+    @Published var selectedProject: SpriteProjectModel?
     
     private let spriteBookProvider: AnyPublisher<[SpriteProjectModel], Never>
     

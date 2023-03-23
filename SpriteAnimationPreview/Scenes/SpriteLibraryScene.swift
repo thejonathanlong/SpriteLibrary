@@ -45,8 +45,11 @@ class SpriteLibraryScene: SKScene {
         addNode.position = CGPoint(x: 50, y: size.height - 50)
         return addNode
     }()
+
+    var shouldShowAddNode: Bool
     
-    override init(size: CGSize) {
+    init(size: CGSize, shouldShowAddNode: Bool = true) {
+        self.shouldShowAddNode = shouldShowAddNode
         super.init(size: size)
     }
     
@@ -55,7 +58,9 @@ class SpriteLibraryScene: SKScene {
     }
     
     override func didMove(to view: SKView) {
-        addChild(addNode)
+        if shouldShowAddNode && addNode.parent == nil {
+            addChild(addNode)
+        }
     }
     
     override func update(_ currentTime: TimeInterval) {

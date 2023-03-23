@@ -18,9 +18,7 @@ struct ProjectsSplitView: View {
     var body: some View {
         NavigationSplitView() {
             NavigationLink {
-                if let selectedProjectModel = projectListViewModel.selectedProjectModel {
-                    SpriteProjectDetailsView(detailsViewModel: selectedProjectModel)
-                }
+                SpriteProjectDetailsView(detailsViewModel: projectListViewModel.selectedProjectModel ?? SpriteProjectDetailsViewModel(selectedProject: nil, spriteProvider: Empty<[SpritePreviewModel], Never>().eraseToAnyPublisher()))
             } label: {
                 ProjectList(projectListViewModel: projectListViewModel)
                     .toolbar {
@@ -35,9 +33,7 @@ struct ProjectsSplitView: View {
                     }
             }
         } detail: {
-            if let selectedProjectModel = projectListViewModel.selectedProjectModel {
-                SpriteProjectDetailsView(detailsViewModel: selectedProjectModel)
-            }
+            SpriteProjectDetailsView(detailsViewModel: projectListViewModel.selectedProjectModel ?? SpriteProjectDetailsViewModel(selectedProject: nil, spriteProvider: Empty<[SpritePreviewModel], Never>().eraseToAnyPublisher()))
         }
     }
 }

@@ -10,15 +10,19 @@ import SwiftUI
 
 struct SpriteProjectDetailsView: View {
 
-    let detailsViewModel: SpriteProjectDetailsViewModel
+    @ObservedObject var detailsViewModel: SpriteProjectDetailsViewModel
+
+    var emptyLibraryScene: SpriteLibraryScene {
+        let scene = SpriteLibraryScene(size: SpriteProjectDetailsViewModel.Constants.size, shouldShowAddNode: false)
+        scene.scaleMode = .aspectFit
+        return scene
+    }
     
     var body: some View {
-        SpriteView(scene: detailsViewModel.scene)
+        if let scene = detailsViewModel.scene {
+            SpriteView(scene: scene)
+        } else {
+            SpriteView(scene: emptyLibraryScene)
+        }
     }
 }
-
-//struct SpriteProjectDetailsView_Previews: PreviewProvider {
-//    static var previews: some View {
-//        SpriteProjectDetailsView()
-//    }
-//}

@@ -109,6 +109,7 @@ class StoreGlue: NSObject, UIDocumentPickerDelegate {
     }
 
     private func didSelect(project: SpriteProjectModel, projectList: ProjectListViewModel) {
+        projectList.selectedProjectModel?.scene = nil
         let details = SpriteProjectDetailsViewModel(selectedProject: project, spriteProvider: store.state.dataService.spriteDataService.resultPublisher)
         projectList.selectedProjectModel = details
     }
