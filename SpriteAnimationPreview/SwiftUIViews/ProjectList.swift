@@ -14,19 +14,14 @@ struct ProjectList: View {
     
     var body: some View {
         List(projectListViewModel.projects) { project in
-//            if project.assets.isEmpty {
-                emptyAssetsView(project: project)
+            emptyAssetsView(project: project, isSelected: project.id == projectListViewModel.selectedProject?.id)
                 .onTapGesture {
                     projectListViewModel.didSelect(project)
                 }
-//            } else {
-//                disclosureGroup(project: project)
-//
-//            }
         }
     }
     
-    func emptyAssetsView(project: SpriteProjectModel) -> some View {
+    func emptyAssetsView(project: SpriteProjectModel, isSelected: Bool) -> some View {
         HStack {
             if let _ = project.icon {
                 Spacer()
@@ -41,6 +36,8 @@ struct ProjectList: View {
                 Spacer()
             }
         }
+        .padding()
+        .background(RoundedRectangle(cornerRadius: 8.0).stroke( isSelected ? Color.red : Color.clear))
     }
     
     func disclosureGroup(project: SpriteProjectModel) -> some View {
@@ -81,39 +78,6 @@ struct ProjectList: View {
     }
 }
 
-struct TestData: Identifiable {
-    let name: String
-    let children: [ChildData]
-    
-    let id = UUID()
-}
-
-struct ChildData: Identifiable {
-    let data: Int
-    
-    let id = UUID()
-}
-
-struct xyz: View {
-    let data: [TestData]
-    
-    var body: some View {
-        
-        List(data) { datum in
-            DisclosureGroup {
-                VStack {
-                    ForEach(datum.children) { child in
-                        Text("\(child.data)")
-                    }
-                }
-            } label: {
-                Text(datum.name)
-            }
-
-        }
-    }
-}
-
 
 //TODO: Make a MockDataService to make this Preview work.
 //struct ProjectList_Previews: PreviewProvider {
@@ -137,33 +101,3 @@ struct xyz: View {
 //        ]))
 //    }
 //}
-
-struct xyz_Previews: PreviewProvider {
-    static var previews: some View {
-        xyz(data: [
-            TestData(name: "1",
-                     children: [
-                        ChildData(data: 1),
-                        ChildData(data: 1),
-                        ChildData(data: 1),
-                        ChildData(data: 1),
-                        ChildData(data: 1),
-                        ChildData(data: 1),
-                        ChildData(data: 1),
-                        ChildData(data: 1)
-                     ]),
-            TestData(name: "2",
-                     children: [
-                        ChildData(data: 2),
-                        ChildData(data: 2),
-                        ChildData(data: 2),
-                        ChildData(data: 2),
-                        ChildData(data: 2),
-                        ChildData(data: 2),
-                        ChildData(data: 2),
-                        ChildData(data: 2)
-                     ]),
-        ])
-    }
-    
-}

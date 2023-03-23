@@ -20,8 +20,6 @@ struct ProjectsSplitView: View {
             NavigationLink {
                 if let selectedProjectModel = projectListViewModel.selectedProjectModel {
                     SpriteProjectDetailsView(detailsViewModel: selectedProjectModel)
-                } else {
-                    Text("I dunno")
                 }
             } label: {
                 ProjectList(projectListViewModel: projectListViewModel)
@@ -39,8 +37,6 @@ struct ProjectsSplitView: View {
         } detail: {
             if let selectedProjectModel = projectListViewModel.selectedProjectModel {
                 SpriteProjectDetailsView(detailsViewModel: selectedProjectModel)
-            } else {
-                Text("I dunno")
             }
         }
     }

@@ -14,7 +14,13 @@ protocol SpriteCollectionProviderRequester {
 }
 
 class ProjectListViewModel: ObservableObject {
-    @Published var projects = [SpriteProjectModel]()
+    @Published var projects = [SpriteProjectModel]() {
+        didSet {
+            if let firstProject = projects.first {
+                didSelect(firstProject)
+            }
+        }
+    }
     
     @Published var selectedProjectModel: SpriteProjectDetailsViewModel? = nil {
         didSet {
